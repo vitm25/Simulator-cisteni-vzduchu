@@ -1,2 +1,2 @@
-# Simul-tor-i-t-n-vzduchu
+# Simulator cisteni vzduchu
 Simulátor čištění vzduchu
