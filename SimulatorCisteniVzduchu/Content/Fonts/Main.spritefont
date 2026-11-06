@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Font pro texty ve hře. Můžeš změnit FontName na jakýkoli font nainstalovaný ve Windows. -->
+<XnaContent xmlns:Graphics="Microsoft.Xna.Framework.Content.Pipeline.Graphics">
+  <Asset Type="Graphics:FontDescription">
+    <FontName>Comic Sans MS</FontName>
+    <Size>26</Size>
+    <Spacing>0</Spacing>
+    <UseKerning>true</UseKerning>
+    <Style>Bold</Style>
+    <DefaultCharacter>?</DefaultCharacter>
+    <CharacterRegions>
+      <!-- Základní ASCII -->
+      <CharacterRegion><Start>&#32;</Start><End>&#126;</End></CharacterRegion>
+      <!-- Latin-1 + Latin Extended-A: česká diakritika (á, č, ř, ž, ů...) a nedělitelná mezera -->
+      <CharacterRegion><Start>&#160;</Start><End>&#383;</End></CharacterRegion>
+      <!-- Uvozovky „“ a pomlčka – -->
+      <CharacterRegion><Start>&#8211;</Start><End>&#8222;</End></CharacterRegion>
+    </CharacterRegions>
+  </Asset>
+</XnaContent>

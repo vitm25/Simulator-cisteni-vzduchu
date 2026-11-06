@@ -26,4 +26,8 @@
     <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.6.1" />
     <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.6.1" />
   </ItemGroup>
+  <ItemGroup>
+    <!-- Datové soubory (vyvážení hry) se kopírují vedle .exe -->
+    <None Update="Data\**\*.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
 </Project>

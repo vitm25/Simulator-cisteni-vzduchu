@@ -1,0 +1,25 @@
+// Vyvážení hry. Tenhle soubor můžeš upravovat bez sahání do kódu –
+// stačí hru znovu spustit (komentáře jako tento jsou povolené).
+{
+  // Kolik procent kyslíku je v atmosféře na začátku (ve skutečnosti ~21 %).
+  "startOxygen": 21,
+
+  // Kolik smogu celkem musí hráč vyčistit, aby kyslík dosáhl 100 % a hra skončila.
+  "smogToWin": 3000000,
+
+  // O kolik se zdraží každý další kus stejného vylepšení (1.15 = o 15 %).
+  "costGrowth": 1.15,
+
+  // Seznam vylepšení v obchodě (v tomhle pořadí).
+  //   perClick  = kolik smogu navíc dává každé kliknutí na kytku
+  //   perSecond = kolik smogu za sekundu čistí automaticky
+  "upgrades": [
+    { "id": "hnojivo",   "name": "Hnojivo",              "description": "Kytka čistí víc za klik",     "baseCost": 15,     "perClick": 1,  "perSecond": 0 },
+    { "id": "strom",     "name": "Strom",                "description": "Pomalu, ale sám čistí",       "baseCost": 50,     "perClick": 0,  "perSecond": 1 },
+    { "id": "vcely",     "name": "Včelí úl",             "description": "Včely opylují další kytky",   "baseCost": 400,    "perClick": 0,  "perSecond": 6 },
+    { "id": "rukavice",  "name": "Zahradnické rukavice", "description": "Pořádný úchop = pořádný klik","baseCost": 2000,   "perClick": 10, "perSecond": 0 },
+    { "id": "robot",     "name": "Robotí zahradník",     "description": "Sází kytky ve dne v noci",    "baseCost": 3000,   "perClick": 0,  "perSecond": 35 },
+    { "id": "sklenik",   "name": "Skleník",              "description": "Celá továrna na kyslík",      "baseCost": 25000,  "perClick": 0,  "perSecond": 200 },
+    { "id": "dron",      "name": "Dron s filtrem",       "description": "Vysává smog přímo z mraků",   "baseCost": 200000, "perClick": 0,  "perSecond": 1200 }
+  ]
+}

@@ -3,22 +3,15 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using SimulatorCisteniVzduchu.Scenes;
+using SimulatorCisteniVzduchu.Systems;
+using SimulatorCisteniVzduchu.UI;
 
 namespace SimulatorCisteniVzduchu;
 
-/// <summary>
-/// Vstupní třída hry. Nastaví okno a předává Update/Draw aktuální scéně.
-///
-/// Hra se vždy kreslí do "virtuálního" plátna 1920×1080 (16:9) a to se pak
-/// roztáhne na celou obrazovku. Když monitor není 16:9, doplní se černé pruhy,
-/// takže se obraz nikdy nedeformuje. Scény proto vždy počítají se souřadnicemi
-/// 0..ScreenWidth a 0..ScreenHeight bez ohledu na skutečné rozlišení.
-/// </summary>
+
 public class AirGame : Game
 {
-    /// <summary>Šířka virtuálního plátna, do kterého kreslí všechny scény.</summary>
     public const int ScreenWidth = 1920;
-    /// <summary>Výška virtuálního plátna, do kterého kreslí všechny scény.</summary>
     public const int ScreenHeight = 1080;
 
     // Velikost okna, když hráč přepne z fullscreenu (F11).
@@ -29,12 +22,8 @@ public class AirGame : Game
     private SpriteBatch _spriteBatch;
     private RenderTarget2D _canvas;
     private Rectangle _canvasDestination;
-    private KeyboardState _previousKeyboard;
 
     public SceneManager Scenes { get; } = new();
-
-    /// <summary>Bílý 1×1 pixel – hodí se na kreslení obdélníků, než bude grafika.</summary>
-    public Texture2D Pixel { get; private set; }
 
     public AirGame()
     {
@@ -52,6 +41,9 @@ public class AirGame : Game
         Window.Title = "Simulator cisteni vzduchu";
         Window.AllowUserResizing = true;
         Window.ClientSizeChanged += (_, _) => UpdateCanvasDestination();
+
+        // Při zavření okna dáme scéně šanci uložit hru.
+        Exiting += (_, _) => Scenes.Current?.Unload();
     }
 
     protected override void LoadContent()
@@ -60,26 +52,21 @@ public class AirGame : Game
         _canvas = new RenderTarget2D(GraphicsDevice, ScreenWidth, ScreenHeight);
         UpdateCanvasDestination();
 
-        Pixel = new Texture2D(GraphicsDevice, 1, 1);
-        Pixel.SetData(new[] { Color.White });
+        Assets.Load(GraphicsDevice, Content);
 
         Scenes.ChangeScene(new GameScene(this));
     }
 
     protected override void Update(GameTime gameTime)
     {
-        var keyboard = Keyboard.GetState();
+        Input.Update(this);
 
-        if (keyboard.IsKeyDown(Keys.Escape))
+        if (Input.KeyPressed(Keys.Escape))
             Exit();
 
-        bool altEnter = keyboard.IsKeyDown(Keys.Enter) && _previousKeyboard.IsKeyUp(Keys.Enter)
-                        && (keyboard.IsKeyDown(Keys.LeftAlt) || keyboard.IsKeyDown(Keys.RightAlt));
-        bool f11 = keyboard.IsKeyDown(Keys.F11) && _previousKeyboard.IsKeyUp(Keys.F11);
-        if (f11 || altEnter)
+        bool alt = Input.KeyDown(Keys.LeftAlt) || Input.KeyDown(Keys.RightAlt);
+        if (Input.KeyPressed(Keys.F11) || (alt && Input.KeyPressed(Keys.Enter)))
             ToggleFullScreen();
-
-        _previousKeyboard = keyboard;
 
         Scenes.Update(gameTime);
         base.Update(gameTime);
@@ -114,9 +101,6 @@ public class AirGame : Game
             (screenPosition.X - _canvasDestination.X) * (float)ScreenWidth / _canvasDestination.Width,
             (screenPosition.Y - _canvasDestination.Y) * (float)ScreenHeight / _canvasDestination.Height);
     }
-
-    /// <summary>Pozice myši v souřadnicích virtuálního plátna.</summary>
-    public Vector2 MouseOnCanvas => ScreenToCanvas(Mouse.GetState().Position);
 
     private void ToggleFullScreen()
     {
