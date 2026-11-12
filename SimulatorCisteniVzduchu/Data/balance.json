@@ -10,6 +10,27 @@
   // O kolik se zdraží každý další kus stejného vylepšení (1.15 = o 15 %).
   "costGrowth": 1.15,
 
+  // Továrny záporáka (začne je stavět, až to řekne příběh – viz story.json).
+  "factories": {
+    // Za kolik sekund postaví další továrnu: na začátku hry / těsně před koncem.
+    "spawnIntervalStart": 45,
+    "spawnIntervalEnd": 18,
+    // Kolik továren může stát najednou.
+    "maxCount": 4,
+    // Každá továrna znečišťuje tolik procent z hráčova čištění za sekundu (0.25 = 25 %),
+    // ale vždy aspoň tolik, aby stáhla "minOxygenDrain" procentních bodů kyslíku za sekundu
+    // (0.01 = 0,6 % kyslíku za minutu na jednu továrnu, 4 továrny = 2,4 % za minutu).
+    "pollutionFraction": 0.25,
+    "minOxygenDrain": 0.01,
+    // Kolikrát se musí na továrnu kliknout: základ + přírůstek za každou dříve postavenou,
+    // ale nejvýš "maxHealth".
+    "baseHealth": 12,
+    "healthGrowth": 2,
+    "maxHealth": 40,
+    // Odměna za zničení = tolik sekund hráčova čištění (aspoň 25 smogu).
+    "bountySeconds": 20
+  },
+
   // Seznam vylepšení v obchodě (v tomhle pořadí).
   //   perClick  = kolik smogu navíc dává každé kliknutí na kytku
   //   perSecond = kolik smogu za sekundu čistí automaticky

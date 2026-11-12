@@ -16,14 +16,36 @@ public class UpgradeDefinition
     public double PerSecond { get; set; }
 }
 
+/// <summary>Nastavení továren záporáka (sekce "factories" v balance.json).</summary>
+public class FactoryBalance
+{
+    public double SpawnIntervalStart { get; set; } = 45;
+    public double SpawnIntervalEnd { get; set; } = 18;
+    public int MaxCount { get; set; } = 4;
+    public double PollutionFraction { get; set; } = 0.25;
+    /// <summary>O kolik procentních bodů kyslíku za sekundu stáhne jedna továrna minimálně.</summary>
+    public double MinOxygenDrain { get; set; } = 0.01;
+    public int BaseHealth { get; set; } = 12;
+    public int HealthGrowth { get; set; } = 2;
+    public int MaxHealth { get; set; } = 40;
+    public double BountySeconds { get; set; } = 20;
+}
+
 /// <summary>Všechna čísla pro vyvážení hry. Načítají se z Data/balance.json.</summary>
 public class Balance
 {
     public double StartOxygen { get; set; } = 21;
     public double SmogToWin { get; set; } = 3_000_000;
     public double CostGrowth { get; set; } = 1.15;
+    public FactoryBalance Factories { get; set; } = new();
     public List<UpgradeDefinition> Upgrades { get; set; } = new();
 
+    public static Balance Load() => DataFiles.Load<Balance>("balance.json");
+}
+
+/// <summary>Načítání JSON souborů ze složky Data (vedle .exe).</summary>
+public static class DataFiles
+{
     private static readonly JsonSerializerOptions JsonOptions = new()
     {
         PropertyNameCaseInsensitive = true,
@@ -31,11 +53,11 @@ public class Balance
         AllowTrailingCommas = true,
     };
 
-    public static Balance Load()
+    public static T Load<T>(string fileName)
     {
-        string path = Path.Combine(AppContext.BaseDirectory, "Data", "balance.json");
+        string path = Path.Combine(AppContext.BaseDirectory, "Data", fileName);
         string json = File.ReadAllText(path);
-        return JsonSerializer.Deserialize<Balance>(json, JsonOptions)
-               ?? throw new InvalidDataException("Soubor balance.json je prázdný.");
+        return JsonSerializer.Deserialize<T>(json, JsonOptions)
+               ?? throw new InvalidDataException($"Soubor {fileName} je prázdný.");
     }
 }

@@ -10,7 +10,28 @@ public class SaveData
 {
     public double Smog { get; set; }
     public double TotalCleaned { get; set; }
+    public double TotalPolluted { get; set; }
     public Dictionary<string, int> Owned { get; set; } = new();
+    public VillainSave Villain { get; set; } = new();
+}
+
+/// <summary>Uložený stav záporáka.</summary>
+public class VillainSave
+{
+    /// <summary>Hladiny kyslíku příběhových dialogů, které už hráč viděl.</summary>
+    public List<double> SeenMilestones { get; set; } = new();
+    public bool FactoriesActive { get; set; }
+    public int FactoriesBuilt { get; set; }
+    public int FactoriesDestroyed { get; set; }
+    public double SpawnTimer { get; set; }
+    public List<FactorySave> Factories { get; set; } = new();
+}
+
+public class FactorySave
+{
+    public int Slot { get; set; }
+    public int Health { get; set; }
+    public int MaxHealth { get; set; }
 }
 
 /// <summary>

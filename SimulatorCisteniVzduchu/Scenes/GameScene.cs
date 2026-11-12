@@ -36,10 +36,17 @@ public class GameScene : Scene
     private const double AutosaveInterval = 15;
 
     private GameState _state;
+    private Story _story;
+    private Villain _villain;
+    private readonly DialogBox _dialog = new();
+    private readonly VillainToast _toast = new();
     private readonly List<FloatingText> _floatingTexts = new();
     private readonly Random _random = new();
     private readonly List<Vector3> _smogClouds = new(); // X, Y, rychlost
     private float _flowerPulse;
+    private double _lastOxygen = -1;
+    private double _oxygenTrend;   // vyhlazená změna kyslíku za sekundu
+    private float _factoryHaze;    // vyhlazený počet továren (pro opar na obloze)
     private double _autosaveTimer;
     private float _time;
     private bool _finished;
@@ -48,10 +55,33 @@ public class GameScene : Scene
 
     public override void Load()
     {
+        Sounds.Init(Game.Content);
+        VillainArt.Load(Game.Content);
+
         _state = new GameState(Balance.Load());
+        _story = Story.Load();
+        _villain = new Villain(_state, _story);
+
         var save = SaveSystem.Load();
         if (save != null)
+        {
             _state.LoadFrom(save);
+            _villain.LoadFrom(save.Villain);
+        }
+
+        _villain.OnMilestone += milestone =>
+            _dialog.Open(_story.VillainName, _story.VillainTitle, milestone.Lines);
+        _villain.OnTaunt += text => _toast.Show(_story.VillainName, text);
+        _villain.OnFactoryBuilt += _ => Sounds.Play("Sounds/villain_factory");
+        _villain.OnFactoryDestroyed += (factory, bounty) =>
+        {
+            Sounds.Play("Sounds/factory_sabotage");
+            var center = factory.Bounds.Center.ToVector2();
+            _floatingTexts.Add(new FloatingText("Továrna zničena!", center - new Vector2(0, 60),
+                new Color(255, 230, 120), new Vector2(0, -70)));
+            _floatingTexts.Add(new FloatingText("+" + NumberFormat.Whole(bounty) + " smogu", center,
+                Color.White, new Vector2(0, -110)));
+        };
 
         for (int i = 0; i < 14; i++)
             _smogClouds.Add(new Vector3(_random.Next(0, 1360), _random.Next(300, 700), _random.Next(15, 45)));
@@ -60,7 +90,14 @@ public class GameScene : Scene
     public override void Unload()
     {
         if (!_finished)
-            SaveSystem.Save(_state.ToSave());
+            SaveGame();
+    }
+
+    private void SaveGame()
+    {
+        var save = _state.ToSave();
+        save.Villain = _villain.ToSave();
+        SaveSystem.Save(save);
     }
 
     // =====================================================================
@@ -72,18 +109,32 @@ public class GameScene : Scene
         float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
         _time += dt;
 
+        // Během příběhového dialogu je hra pozastavená.
+        if (_dialog.IsOpen)
+        {
+            _dialog.Update(dt);
+            return;
+        }
+
         _state.Update(dt);
+        _villain.Update(dt);
+        _toast.Update(dt);
 
         if (Input.LeftClicked)
             HandleClick(Input.MousePosition);
 
 #if DEBUG
-        // Testovací zkratka (jen v Debug buildu): F2 přidá 10 % smogu potřebného k výhře.
+        // Testovací zkratky (jen v Debug buildu):
+        //   F2 = přidá 10 % smogu potřebného k výhře,  F3 = záporák hned postaví továrnu.
         if (Input.KeyPressed(Keys.F2))
             _state.AddSmog(_state.Balance.SmogToWin * 0.1);
+        if (Input.KeyPressed(Keys.F3))
+            _villain.SpawnFactory();
 #endif
 
         _flowerPulse = Math.Max(0, _flowerPulse - dt * 6);
+        UpdateOxygenTrend(dt);
+        _factoryHaze = MathHelper.Lerp(_factoryHaze, _villain.Factories.Count, 1 - MathF.Exp(-dt * 1.5f));
 
         for (int i = _floatingTexts.Count - 1; i >= 0; i--)
         {
@@ -104,10 +155,11 @@ public class GameScene : Scene
         if (_autosaveTimer >= AutosaveInterval)
         {
             _autosaveTimer = 0;
-            SaveSystem.Save(_state.ToSave());
+            SaveGame();
         }
 
-        if (_state.IsWon)
+        // Vítězství až po dočtení případného posledního dialogu záporáka.
+        if (_state.IsWon && !_dialog.IsOpen)
         {
             _finished = true;
             SaveSystem.Delete();
@@ -115,9 +167,34 @@ public class GameScene : Scene
         }
     }
 
+    /// <summary>Měří, jak rychle se kyslík skutečně mění (včetně klikání i továren).</summary>
+    private void UpdateOxygenTrend(float dt)
+    {
+        double oxygen = _state.Oxygen;
+        if (_lastOxygen >= 0 && dt > 0)
+        {
+            double change = (oxygen - _lastOxygen) / dt;
+            // Velké skoky (F2, odměna za továrnu) do trendu nezapočítáme.
+            if (Math.Abs(change) < 5)
+                _oxygenTrend = MathHelper.Lerp((float)_oxygenTrend, (float)change, 1 - MathF.Exp(-dt * 1.2f));
+        }
+        _lastOxygen = oxygen;
+    }
+
     private void HandleClick(Vector2 mouse)
     {
         Point point = mouse.ToPoint();
+
+        // Továrny mají přednost – stojí v krajině vedle kytky.
+        var factory = _villain.TryHit(point);
+        if (factory != null)
+        {
+            Sounds.Play("Sounds/ui_click", 0.6f, 0.15f);
+            if (factory.Health > 0)
+                _floatingTexts.Add(new FloatingText("Bum!", mouse, new Color(255, 180, 120),
+                    new Vector2(_random.Next(-40, 41), -130)));
+            return;
+        }
 
         if (FlowerHitbox.Contains(point))
         {
@@ -161,14 +238,45 @@ public class GameScene : Scene
 
         DrawSkyAndGround(batch, progress);
         DrawUpgradeDecorations(batch);
+        DrawFactories(batch);
         DrawFlower(batch);
         DrawHud(batch);
         DrawShop(batch);
+        _toast.Draw(batch);
 
         foreach (var text in _floatingTexts)
             text.Draw(batch);
 
+        _dialog.Draw(batch);
+
         batch.End();
+    }
+
+    private void DrawFactories(SpriteBatch batch)
+    {
+        var mouse = Input.MousePosition.ToPoint();
+        foreach (var factory in _villain.Factories)
+        {
+            var bounds = factory.Bounds;
+            // Po zásahu se továrna zatřese.
+            bounds.Offset((int)(MathF.Sin(_time * 60) * 6 * factory.HitShake), 0);
+            VillainArt.DrawFactory(batch, bounds, _time, factory.BuildProgress, factory.Slot);
+
+            if (factory.BuildProgress < 1)
+                continue;
+
+            // Ukazatel života nad továrnou
+            var bar = new Rectangle(bounds.Center.X - 70, bounds.Y - 30, 140, 16);
+            batch.DrawRect(bar, Color.Black * 0.6f);
+            var fill = bar;
+            fill.Width = (int)(bar.Width * factory.Health / (float)factory.MaxHealth);
+            batch.DrawRect(fill, new Color(230, 60, 50));
+            batch.DrawFrame(bar, 2, Color.White * 0.8f);
+
+            if (factory.Bounds.Contains(mouse))
+                batch.DrawTextCentered(Assets.FontSmall, "Klikej = sabotáž!",
+                    new Vector2(bounds.Center.X, bounds.Y - 55), Color.White);
+        }
     }
 
     private void DrawSkyAndGround(SpriteBatch batch, float progress)
@@ -176,8 +284,11 @@ public class GameScene : Scene
         // Slunce se s čistějším vzduchem víc ukazuje.
         batch.DrawCircle(new Vector2(1180, 380), 90, new Color(255, 220, 90) * (0.25f + 0.75f * progress));
 
-        // Mraky smogu postupně mizí.
-        float smogAlpha = 0.65f * (1 - progress);
+        // Továrny zahalí oblohu do hnědého oparu.
+        batch.DrawRect(new Rectangle(0, 0, AirGame.ScreenWidth, GroundTop), new Color(70, 50, 30) * (0.09f * _factoryHaze));
+
+        // Mraky smogu postupně mizí – ale továrny je zase přidávají.
+        float smogAlpha = Math.Min(0.8f, 0.65f * (1 - progress) + 0.1f * _factoryHaze);
         var smogColor = new Color(70, 65, 55) * smogAlpha;
         foreach (var cloud in _smogClouds)
         {
@@ -290,14 +401,35 @@ public class GameScene : Scene
             $"+{NumberFormat.Whole(_state.PerClick)} za klik     +{NumberFormat.Rate(_state.PerSecond)} za sekundu",
             new Vector2(62, 120), Color.White);
 
+        // Znečištění od továren záporáka (zarovnané doprava nad ukazatel kyslíku)
+        double pollution = _villain.PollutionPerSecond;
+        if (pollution > 0)
+        {
+            string text = $"Továrny ({_villain.Factories.Count}x): -{NumberFormat.Rate(pollution)} za sekundu";
+            float width = Assets.FontMain.MeasureString(text).X;
+            float pulse = 0.75f + 0.25f * MathF.Sin(_time * 4);
+            batch.DrawText(Assets.FontMain, text, new Vector2(OxygenBar.Right - width, 120),
+                new Color(255, 110, 90) * pulse);
+        }
+
         // Kyslík
         batch.DrawText(Assets.FontSmall, "Kyslík v atmosféře (cíl 100 %)", new Vector2(62, 180), Color.White);
+
+        // Trend: jestli kyslík zrovna roste, nebo ho továrny stahují dolů.
+        bool falling = _oxygenTrend < -0.0005;
+        string trend = (_oxygenTrend >= 0 ? "+" : "") + NumberFormat.Percent(_oxygenTrend, 3) + " za sekundu";
+        if (falling) trend = "KLESÁ! " + trend;
+        float trendWidth = Assets.FontSmall.MeasureString(trend).X;
+        batch.DrawText(Assets.FontSmall, trend, new Vector2(OxygenBar.Right - trendWidth, 180),
+            falling ? new Color(255, 110, 90) : new Color(170, 255, 170));
+
         batch.DrawRect(OxygenBar, new Color(40, 40, 40) * 0.6f);
         var fill = OxygenBar;
         fill.Width = (int)(OxygenBar.Width * _state.Oxygen / 100);
         batch.DrawRect(fill, new Color(120, 220, 255));
-        batch.DrawFrame(OxygenBar, 4, Color.White);
-        batch.DrawTextCentered(Assets.FontMain, "O2: " + NumberFormat.Percent(_state.Oxygen),
+        float alarm = falling ? 0.5f + 0.5f * MathF.Sin(_time * 8) : 0f;
+        batch.DrawFrame(OxygenBar, 4, Color.Lerp(Color.White, new Color(255, 60, 40), alarm));
+        batch.DrawTextCentered(Assets.FontMain, "O2: " + NumberFormat.Percent(_state.Oxygen, 2),
             OxygenBar.Center.ToVector2(), Color.White);
 
         // Nápověda

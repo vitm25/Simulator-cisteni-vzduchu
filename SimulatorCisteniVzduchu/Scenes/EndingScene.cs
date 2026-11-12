@@ -146,16 +146,9 @@ public class EndingScene : Scene
         batch.DrawCircle(PlanetCenter + new Vector2(-30, 150), 50, new Color(70, 170, 70));
     }
 
-    private static void DrawVillain(SpriteBatch batch)
+    private void DrawVillain(SpriteBatch batch)
     {
-        var head = new Rectangle(1450, 520, 240, 200);
-        batch.DrawRect(head, new Color(120, 120, 130));
-        batch.DrawFrame(head, 6, new Color(60, 60, 70));
-        batch.DrawCircle(new Vector2(1520, 590), 22, new Color(255, 40, 40));
-        batch.DrawCircle(new Vector2(1620, 590), 22, new Color(255, 40, 40));
-        batch.DrawRect(new Rectangle(1500, 660, 140, 14), new Color(40, 40, 50));
-        batch.DrawRect(new Rectangle(1565, 470, 10, 50), new Color(60, 60, 70)); // anténa
-        batch.DrawCircle(new Vector2(1570, 465), 12, new Color(255, 40, 40));
+        VillainArt.DrawHead(batch, new Rectangle(1450, 470, 240, 240), _time);
     }
 
     private static void DrawMatch(SpriteBatch batch, bool lit)

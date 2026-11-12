@@ -17,6 +17,9 @@ public class GameState
     /// <summary>Kolik smogu hráč za celou hru vyčistil (utrácení to nesnižuje).</summary>
     public double TotalCleaned { get; private set; }
 
+    /// <summary>Kolik smogu za celou hru vypustily továrny záporáka zpátky do vzduchu.</summary>
+    public double TotalPolluted { get; private set; }
+
     private readonly Dictionary<string, int> _owned = new();
 
     public GameState(Balance balance)
@@ -46,13 +49,21 @@ public class GameState
         }
     }
 
-    /// <summary>Jak daleko je hráč k vítězství, 0..1.</summary>
-    public double Progress => Math.Clamp(TotalCleaned / Balance.SmogToWin, 0, 1);
+    /// <summary>Jak daleko je hráč k vítězství, 0..1 (vyčištěno mínus to, co továrny znovu zašpinily).</summary>
+    public double Progress => Math.Clamp((TotalCleaned - TotalPolluted) / Balance.SmogToWin, 0, 1);
 
     /// <summary>Procento kyslíku v atmosféře (od startOxygen do 100).</summary>
     public double Oxygen => Balance.StartOxygen + (100 - Balance.StartOxygen) * Progress;
 
     public bool IsWon => Progress >= 1;
+
+    /// <summary>Kolik smogu odpovídá daným procentním bodům kyslíku.</summary>
+    public double OxygenToSmog(double oxygenPoints) =>
+        oxygenPoints / (100 - Balance.StartOxygen) * Balance.SmogToWin;
+
+    /// <summary>Kolik procentních bodů kyslíku odpovídá danému množství smogu.</summary>
+    public double SmogToOxygen(double smog) =>
+        smog / Balance.SmogToWin * (100 - Balance.StartOxygen);
 
     public int Owned(UpgradeDefinition upgrade) =>
         _owned.TryGetValue(upgrade.Id, out int count) ? count : 0;
@@ -98,12 +109,22 @@ public class GameState
         TotalCleaned += amount;
     }
 
+    /// <summary>
+    /// Továrny vrací smog zpátky do vzduchu – kyslík klesá. Nikdy ale neklesne
+    /// pod startovní hodnotu (nemůže vzniknout „dluh“, který by hráč musel splácet).
+    /// </summary>
+    public void AddPollution(double amount)
+    {
+        TotalPolluted = Math.Min(TotalPolluted + amount, TotalCleaned);
+    }
+
     // ---------- Ukládání ----------
 
     public SaveData ToSave() => new()
     {
         Smog = Smog,
         TotalCleaned = TotalCleaned,
+        TotalPolluted = TotalPolluted,
         Owned = new Dictionary<string, int>(_owned),
     };
 
@@ -111,6 +132,7 @@ public class GameState
     {
         Smog = save.Smog;
         TotalCleaned = save.TotalCleaned;
+        TotalPolluted = save.TotalPolluted;
         _owned.Clear();
         foreach (var (id, count) in save.Owned)
             _owned[id] = count;

@@ -24,7 +24,8 @@ public static class NumberFormat
         return Whole(value);
     }
 
-    public static string Percent(double value) => value.ToString("0.0", Czech) + " %";
+    public static string Percent(double value, int decimals = 1) =>
+        value.ToString("0." + new string('0', decimals), Czech) + " %";
 
     private static string Large(double value)
     {

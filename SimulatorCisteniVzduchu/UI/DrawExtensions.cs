@@ -33,6 +33,28 @@ public static class DrawExtensions
         batch.DrawString(font, text, position, color, 0, Vector2.Zero, scale, SpriteEffects.None, 0);
     }
 
+    /// <summary>Zalomí text do řádků tak, aby se vešel do šířky <paramref name="maxWidth"/>.</summary>
+    public static string WrapText(SpriteFont font, string text, float maxWidth)
+    {
+        var result = new System.Text.StringBuilder();
+        string line = "";
+        foreach (string word in text.Split(' '))
+        {
+            string candidate = line.Length == 0 ? word : line + " " + word;
+            if (font.MeasureString(candidate).X > maxWidth && line.Length > 0)
+            {
+                result.Append(line).Append('\n');
+                line = word;
+            }
+            else
+            {
+                line = candidate;
+            }
+        }
+        result.Append(line);
+        return result.ToString();
+    }
+
     /// <summary>Text vycentrovaný na daný bod.</summary>
     public static void DrawTextCentered(this SpriteBatch batch, SpriteFont font, string text, Vector2 center,
         Color color, float scale = 1f)

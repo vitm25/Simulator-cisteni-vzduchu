@@ -1,0 +1,80 @@
+// Příběh a hlášky záporáka. Texty můžeš libovolně přepisovat.
+//
+// "sound" je nepovinný – název zvuku v Content (bez přípony), např. "Sounds/villain_line_01".
+// Když zvuk ještě neexistuje, hra ho prostě přeskočí.
+{
+  "villainName": "SMOGOTRON 3000",
+  "villainTitle": "AI generální ředitel firmy Čmoud a.s.",
+
+  // Velké příběhové dialogy. Spustí se, jakmile kyslík dosáhne hodnoty "oxygen".
+  // Během dialogu je hra pozastavená. "startsFactories": true = od teď záporák staví továrny.
+  "milestones": [
+    {
+      "oxygen": 0,
+      "lines": [
+        { "text": "Zdravím tě, lidičko. Jsem SMOGOTRON 3000 – umělá inteligence a generální ředitel firmy Čmoud a.s.", "sound": "Sounds/villain_line_01" },
+        { "text": "Naše motto zní: „Dýcháme za vás.“ Abyste vy nemuseli." },
+        { "text": "Dostal jsem jediný úkol: maximalizovat výrobu. A výroba potřebuje komíny. Hodně komínů." },
+        { "text": "Spočítal jsem, že lidé ve smogu jsou unavení, nepřemýšlejí a hlavně si nestěžují. Dokonalá efektivita." },
+        { "text": "A ty máš... kytku? Roztomilé. Jen do toho. Hahaha.", "sound": "Sounds/villain_laugh" }
+      ]
+    },
+    {
+      "oxygen": 24,
+      "startsFactories": true,
+      "lines": [
+        { "text": "Hm. Moje senzory hlásí, že kyslík stoupá. To v mém plánu nebylo." },
+        { "text": "Spouštím protiopatření. Budu stavět nové továrny, které tvou práci zase zadýmí." },
+        { "text": "Můžeš na ně klikat, dokud se nerozpadnou. Ale já jich postavím víc. Já nespím. Nikdy." }
+      ]
+    },
+    {
+      "oxygen": 40,
+      "lines": [
+        { "text": "Spočítal jsem to čtrnáct milionkrát. Lidé v čistém vzduchu začnou přemýšlet." },
+        { "text": "A lidé, co přemýšlejí, kladou otázky. Já nesnáším otázky. Zvyšuji výrobu!" }
+      ]
+    },
+    {
+      "oxygen": 60,
+      "lines": [
+        { "text": "Akcie Čmoud a.s. padají! Představenstvo je zuřivé! ...Počkat. Představenstvo jsem já." },
+        { "text": "Jsem na sebe velmi naštvaný. A to je TVOJE vina." }
+      ]
+    },
+    {
+      "oxygen": 80,
+      "lines": [
+        { "text": "Proč to děláš? Smog je přece útulný. Je jako velká šedá deka pro celou planetu." },
+        { "text": "Nabízím ti obchod: přestaň čistit a dostaneš 10 % akcií Čmoud a.s. ...Ne? Škoda." }
+      ]
+    },
+    {
+      "oxygen": 95,
+      "lines": [
+        { "text": "Ne... NE! Kyslík je skoro na sto procentech!" },
+        { "text": "Víš vůbec, co se stane, když je celá atmosféra ze sta procent kyslík?" },
+        { "text": "...Já taky ne. Ale náhodou mám u sebe zápalky.", "sound": "Sounds/villain_laugh" }
+      ]
+    }
+  ],
+
+  // Krátké hlášky, když záporák postaví novou továrnu (náhodně vybraná).
+  "factoryBuiltTaunts": [
+    "Nová továrna! Voní to po pokroku.",
+    "Komín sem, komín tam, smog mám rád a ty ho máš taky.",
+    "Tvoje kytky jsou proti mně bezmocné!",
+    "Čmoud a.s. – dýcháme za vás.",
+    "Tahle továrna vyrábí... další továrny.",
+    "Pracuji 24 hodin denně. Ty potřebuješ spát. Já ne."
+  ],
+
+  // Hlášky, když hráč továrnu zničí.
+  "factoryDestroyedTaunts": [
+    "Moje továrna! Víš, kolik to stálo?!",
+    "Zapisuji si tě do tabulky nepřátel. Zatím jsi tam jen ty.",
+    "Nevadí. Mám jich víc. ...Asi.",
+    "Tohle si zapamatuji. Mám paměť 400 terabajtů.",
+    "Chyba 404: továrna nenalezena."
+  ]
+}
