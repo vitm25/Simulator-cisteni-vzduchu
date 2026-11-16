@@ -50,12 +50,12 @@ public class GameScene : Scene
     private double _autosaveTimer;
     private float _time;
     private bool _finished;
+    private readonly Ambience _ambience = new();
 
     public GameScene(AirGame game) : base(game) { }
 
     public override void Load()
     {
-        Sounds.Init(Game.Content);
         VillainArt.Load(Game.Content);
 
         _state = new GameState(Balance.Load());
@@ -71,11 +71,20 @@ public class GameScene : Scene
 
         _villain.OnMilestone += milestone =>
             _dialog.Open(_story.VillainName, _story.VillainTitle, milestone.Lines);
-        _villain.OnTaunt += text => _toast.Show(_story.VillainName, text);
-        _villain.OnFactoryBuilt += _ => Sounds.Play("Sounds/villain_factory");
+        _villain.OnTaunt += text =>
+        {
+            _toast.Show(_story.VillainName, text);
+            Sounds.Play("Sounds/villain_laugh", 0.7f, 0.05f);
+        };
+        _villain.OnFactoryBuilt += _ =>
+        {
+            Sounds.Play("Sounds/villain_factory");
+            Sounds.Play("Music/music_villain", 0.6f);
+        };
         _villain.OnFactoryDestroyed += (factory, bounty) =>
         {
             Sounds.Play("Sounds/factory_sabotage");
+            Sounds.Play("Sounds/smog_collect", 0.8f, 0.1f);
             var center = factory.Bounds.Center.ToVector2();
             _floatingTexts.Add(new FloatingText("Továrna zničena!", center - new Vector2(0, 60),
                 new Color(255, 230, 120), new Vector2(0, -70)));
@@ -89,6 +98,8 @@ public class GameScene : Scene
 
     public override void Unload()
     {
+        _ambience.Stop();
+        Sounds.StopVoice();
         if (!_finished)
             SaveGame();
     }
@@ -108,6 +119,8 @@ public class GameScene : Scene
     {
         float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
         _time += dt;
+
+        _ambience.Update(dt, _state.Oxygen, _state.Progress, ducked: _dialog.IsOpen);
 
         // Během příběhového dialogu je hra pozastavená.
         if (_dialog.IsOpen)
@@ -200,6 +213,7 @@ public class GameScene : Scene
         {
             double gained = _state.Click();
             _flowerPulse = 1;
+            Sounds.Play("Sounds/click_flower", 0.8f, 0.12f);
             var velocity = new Vector2(_random.Next(-60, 61), -_random.Next(120, 200));
             _floatingTexts.Add(new FloatingText("+" + NumberFormat.Whole(gained), mouse, Color.White, velocity));
             return;
@@ -212,9 +226,16 @@ public class GameScene : Scene
                 continue;
 
             if (_state.TryBuy(upgrades[i]))
+            {
                 _floatingTexts.Add(new FloatingText("Koupeno!", mouse, new Color(255, 240, 120), new Vector2(0, -90)));
+                Sounds.Play("Sounds/buy_upgrade", 0.9f, 0.05f);
+                Sounds.Play(upgrades[i].Sound, 0.8f, 0.05f);
+            }
             else
+            {
                 _floatingTexts.Add(new FloatingText("Málo smogu", mouse, new Color(255, 140, 120), new Vector2(0, -90)));
+                Sounds.Play("Sounds/not_enough", 0.8f);
+            }
             return;
         }
     }
@@ -436,7 +457,7 @@ public class GameScene : Scene
         if (_state.TotalCleaned < 25)
             batch.DrawTextCentered(Assets.FontBig, "Klikej na kytku!", new Vector2(680, 760), Color.White);
 
-        batch.DrawText(Assets.FontSmall, "F11 – okno / celá obrazovka     Esc – uložit a ukončit",
+        batch.DrawText(Assets.FontSmall, "F11 – okno / celá obrazovka     M – zvuk zap./vyp.     Esc – uložit a ukončit",
             new Vector2(20, AirGame.ScreenHeight - 40), Color.White * 0.8f);
     }
 

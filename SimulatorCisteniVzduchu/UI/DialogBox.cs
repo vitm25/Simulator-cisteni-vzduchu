@@ -46,7 +46,7 @@ public class DialogBox
         _index = index;
         _shownChars = 0;
         _wrapped = DrawExtensions.WrapText(Assets.FontMain, _lines[index].Text, TextWidth);
-        Sounds.Play(_lines[index].Sound);
+        Sounds.PlayVoice(_lines[index].Sound);
     }
 
     private bool LineComplete => _shownChars >= _wrapped.Length;
@@ -62,6 +62,8 @@ public class DialogBox
         bool advance = Input.LeftClicked || Input.KeyPressed(Keys.Space) || Input.KeyPressed(Keys.Enter);
         if (!advance)
             return;
+
+        Sounds.Play("Sounds/ui_click", 0.5f, 0.1f);
 
         if (!LineComplete)
             _shownChars = _wrapped.Length;          // dopsat celý text

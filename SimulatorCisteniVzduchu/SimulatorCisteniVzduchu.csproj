@@ -29,5 +29,7 @@
   <ItemGroup>
     <!-- Datové soubory (vyvážení hry) se kopírují vedle .exe -->
     <None Update="Data\**\*.json" CopyToOutputDirectory="PreserveNewest" />
+    <!-- Zvuky a hudba: stačí dát .wav do Content\Sounds nebo Content\Music, zkopírují se vedle .exe -->
+    <None Update="Content\Sounds\**\*.wav;Content\Music\**\*.wav" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>

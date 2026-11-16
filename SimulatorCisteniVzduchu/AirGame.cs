@@ -53,6 +53,7 @@ public class AirGame : Game
         UpdateCanvasDestination();
 
         Assets.Load(GraphicsDevice, Content);
+        Sounds.Init(Content);
 
         Scenes.ChangeScene(new GameScene(this));
     }
@@ -67,6 +68,11 @@ public class AirGame : Game
         bool alt = Input.KeyDown(Keys.LeftAlt) || Input.KeyDown(Keys.RightAlt);
         if (Input.KeyPressed(Keys.F11) || (alt && Input.KeyPressed(Keys.Enter)))
             ToggleFullScreen();
+
+        // M = vypnout / zapnout všechny zvuky.
+        if (Input.KeyPressed(Keys.M))
+            Microsoft.Xna.Framework.Audio.SoundEffect.MasterVolume =
+                Microsoft.Xna.Framework.Audio.SoundEffect.MasterVolume > 0 ? 0 : 1;
 
         Scenes.Update(gameTime);
         base.Update(gameTime);

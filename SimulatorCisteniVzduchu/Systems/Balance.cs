@@ -14,6 +14,8 @@ public class UpgradeDefinition
     public double BaseCost { get; set; }
     public double PerClick { get; set; }
     public double PerSecond { get; set; }
+    /// <summary>Nepovinný zvuk při koupi, např. "Sounds/bees".</summary>
+    public string Sound { get; set; } = "";
 }
 
 /// <summary>Nastavení továren záporáka (sekce "factories" v balance.json).</summary>

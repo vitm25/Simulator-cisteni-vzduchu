@@ -23,8 +23,33 @@ public class EndingScene : Scene
     private readonly Texture2D[] _frames = new Texture2D[FrameCount];
     private readonly Vector2[] _stars = new Vector2[90];
     private float _time;
+    private int _lastFrame = -1;
+    private readonly SoundLoop _spaceWind = new("Sounds/ending_silence_wind", fadePerSecond: 0.25f);
 
     public EndingScene(AirGame game) : base(game) { }
+
+    public override void Unload() => _spaceWind.Stop();
+
+    /// <summary>Zvuky, které zazní na začátku jednotlivých snímků.</summary>
+    private void OnFrameStart(int frame)
+    {
+        switch (frame)
+        {
+            case 1: // SMOGOTRON vytáhne zápalku
+                Sounds.Play("Sounds/villain_laugh");
+                break;
+            case 2: // škrt!
+                Sounds.Play("Sounds/match_strike");
+                Sounds.Play("Sounds/match_burn", 0.7f);
+                break;
+            case 3: // BUUUM
+                Sounds.Play("Sounds/planet_explosion");
+                break;
+            case 4: // ticho ve vesmíru
+                _spaceWind.TargetVolume = 0.6f;
+                break;
+        }
+    }
 
     private int CurrentFrame => Math.Min((int)(_time / FrameDuration), FrameCount - 1);
     private bool AnimationDone => _time >= FrameDuration * FrameCount;
@@ -46,6 +71,15 @@ public class EndingScene : Scene
         // Mezerník / klik přeskočí na další snímek.
         if (!AnimationDone && (Input.KeyPressed(Keys.Space) || Input.LeftClicked))
             _time = (CurrentFrame + 1) * FrameDuration;
+
+        while (_lastFrame < CurrentFrame)
+        {
+            _lastFrame++;
+            // Při rychlém přeskakování nepouštíme zvuky snímků, které hráč přeskočil.
+            if (_lastFrame == CurrentFrame)
+                OnFrameStart(_lastFrame);
+        }
+        _spaceWind.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
 
         if (AnimationDone && Input.KeyPressed(Keys.Enter))
             Game.Scenes.ChangeScene(new GameScene(Game));

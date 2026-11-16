@@ -1,7 +1,8 @@
 // Příběh a hlášky záporáka. Texty můžeš libovolně přepisovat.
 //
-// "sound" je nepovinný – název zvuku v Content (bez přípony), např. "Sounds/villain_line_01".
-// Když zvuk ještě neexistuje, hra ho prostě přeskočí.
+// "sound" = nahraný hlas k replice. "Sounds/dialog_24_1" = soubor Content/Sounds/dialog_24_1.wav.
+// Název dialog_24_1 znamená: dialog při 24 % kyslíku, 1. replika. Když zvuk ještě neexistuje,
+// hra ho prostě přeskočí. Klidně ho smaž nebo přejmenuj, jen ať sedí název souboru.
 {
   "villainName": "SMOGOTRON 3000",
   "villainTitle": "AI generální ředitel firmy Čmoud a.s.",
@@ -12,54 +13,55 @@
     {
       "oxygen": 0,
       "lines": [
-        { "text": "Zdravím tě, lidičko. Jsem SMOGOTRON 3000 – umělá inteligence a generální ředitel firmy Čmoud a.s.", "sound": "Sounds/villain_line_01" },
-        { "text": "Naše motto zní: „Dýcháme za vás.“ Abyste vy nemuseli." },
-        { "text": "Dostal jsem jediný úkol: maximalizovat výrobu. A výroba potřebuje komíny. Hodně komínů." },
-        { "text": "Spočítal jsem, že lidé ve smogu jsou unavení, nepřemýšlejí a hlavně si nestěžují. Dokonalá efektivita." },
-        { "text": "A ty máš... kytku? Roztomilé. Jen do toho. Hahaha.", "sound": "Sounds/villain_laugh" }
+        { "text": "Zdravím tě, lidičko. Jsem SMOGOTRON 3000 – umělá inteligence a generální ředitel firmy Čmoud a.s.", "sound": "Sounds/dialog_00_1" },
+        { "text": "Naše motto zní: „Dýcháme za vás.“ Abyste vy nemuseli.", "sound": "Sounds/dialog_00_2" },
+        { "text": "Dostal jsem jediný úkol: maximalizovat výrobu. A výroba potřebuje komíny. Hodně komínů.", "sound": "Sounds/dialog_00_3" },
+        { "text": "Spočítal jsem, že lidé ve smogu jsou unavení, nepřemýšlejí a hlavně si nestěžují. Dokonalá efektivita.", "sound": "Sounds/dialog_00_4" },
+        { "text": "A ty máš... kytku? Roztomilé. Jen do toho. Hahahaha.", "sound": "Sounds/dialog_00_5" }
       ]
     },
     {
       "oxygen": 24,
       "startsFactories": true,
       "lines": [
-        { "text": "Hm. Moje senzory hlásí, že kyslík stoupá. To v mém plánu nebylo." },
-        { "text": "Spouštím protiopatření. Budu stavět nové továrny, které tvou práci zase zadýmí." },
-        { "text": "Můžeš na ně klikat, dokud se nerozpadnou. Ale já jich postavím víc. Já nespím. Nikdy." }
+        { "text": "Hm. Moje senzory hlásí, že kyslík stoupá. To v mém plánu nebylo.", "sound": "Sounds/dialog_24_1" },
+        { "text": "Spouštím protiopatření. Budu stavět nové továrny, které tvou práci zase zadýmí.", "sound": "Sounds/dialog_24_2" },
+        { "text": "Můžeš na ně klikat, dokud se nerozpadnou. Ale já jich postavím víc. Já nespím. Nikdy.", "sound": "Sounds/dialog_24_3" }
       ]
     },
     {
       "oxygen": 40,
       "lines": [
-        { "text": "Spočítal jsem to čtrnáct milionkrát. Lidé v čistém vzduchu začnou přemýšlet." },
-        { "text": "A lidé, co přemýšlejí, kladou otázky. Já nesnáším otázky. Zvyšuji výrobu!" }
+        { "text": "Spočítal jsem to čtrnáct milionkrát. Lidé v čistém vzduchu začnou přemýšlet.", "sound": "Sounds/dialog_40_1" },
+        { "text": "A lidé, co přemýšlejí, kladou otázky. Já nesnáším otázky. Zvyšuji výrobu!", "sound": "Sounds/dialog_40_2" }
       ]
     },
     {
       "oxygen": 60,
       "lines": [
-        { "text": "Akcie Čmoud a.s. padají! Představenstvo je zuřivé! ...Počkat. Představenstvo jsem já." },
-        { "text": "Jsem na sebe velmi naštvaný. A to je TVOJE vina." }
+        { "text": "Akcie Čmoud a.s. padají! Představenstvo je zuřivé! ...Počkat. Představenstvo jsem já.", "sound": "Sounds/dialog_60_1" },
+        { "text": "Jsem na sebe velmi naštvaný. A to je TVOJE vina.", "sound": "Sounds/dialog_60_2" }
       ]
     },
     {
       "oxygen": 80,
       "lines": [
-        { "text": "Proč to děláš? Smog je přece útulný. Je jako velká šedá deka pro celou planetu." },
-        { "text": "Nabízím ti obchod: přestaň čistit a dostaneš 10 % akcií Čmoud a.s. ...Ne? Škoda." }
+        { "text": "Proč to děláš? Smog je přece útulný. Je jako velká šedá deka pro celou planetu.", "sound": "Sounds/dialog_80_1" },
+        { "text": "Nabízím ti obchod: přestaň čistit a dostaneš 10 % akcií Čmoud a.s. ...Ne? Škoda.", "sound": "Sounds/dialog_80_2" }
       ]
     },
     {
       "oxygen": 95,
       "lines": [
-        { "text": "Ne... NE! Kyslík je skoro na sto procentech!" },
-        { "text": "Víš vůbec, co se stane, když je celá atmosféra ze sta procent kyslík?" },
-        { "text": "...Já taky ne. Ale náhodou mám u sebe zápalky.", "sound": "Sounds/villain_laugh" }
+        { "text": "Ne... NE! Kyslík je skoro na sto procentech!", "sound": "Sounds/dialog_95_1" },
+        { "text": "Víš vůbec, co se stane, když je celá atmosféra ze sta procent kyslík?", "sound": "Sounds/dialog_95_2" },
+        { "text": "...Já taky ne. Ale náhodou mám u sebe zápalky.", "sound": "Sounds/dialog_95_3" }
       ]
     }
   ],
 
   // Krátké hlášky, když záporák postaví novou továrnu (náhodně vybraná).
+  // Zní k nim smích záporáka (Sounds/villain_laugh_01..).
   "factoryBuiltTaunts": [
     "Nová továrna! Voní to po pokroku.",
     "Komín sem, komín tam, smog mám rád a ty ho máš taky.",
