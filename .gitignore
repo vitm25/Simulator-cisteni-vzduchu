@@ -426,3 +426,12 @@ FodyWeavers.xsd
 
 # Official VS Code C# Dev Kit Extension exclusion
 #*.lscache
+
+# Projekty Audacity (velké soubory, GitHub bere max. 100 MB) – do gitu jen hotové .wav
+*.aup
+*.aup3
+*.aup3-shm
+*.aup3-wal
+*.aup4
+*.aup4-shm
+*.aup4-wal
