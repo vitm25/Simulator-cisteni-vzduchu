@@ -22,8 +22,16 @@ public class GameScene : Scene
     private static readonly Rectangle OxygenBar = new(60, 215, 1240, 50);
     private static readonly Rectangle ShopPanel = new(1360, 30, 530, 1020);
     private const int ShopButtonTop = 120;
-    private const int ShopButtonHeight = 118;
-    private const int ShopButtonGap = 10;
+    /// <summary>Kam se kreslí pole slunečnic (260×90): mezi skleníky a do pásu za nimi.</summary>
+    private static readonly Rectangle[] FieldSlots =
+    {
+        new(685, 935, 260, 90),
+        new(40, 838, 260, 90),
+        new(990, 838, 260, 90),
+    };
+
+    private const int ShopButtonHeight = 104;
+    private const int ShopButtonGap = 6;
 
     // ---------- Barvy ----------
     private static readonly Color SmogSky = new(125, 120, 105);
@@ -403,6 +411,21 @@ public class GameScene : Scene
             return 0;
         }
 
+        // Pole slunečnic leží na zemi, proto se kreslí první (stromy a skleníky jsou před nimi).
+        int fields = Math.Min(CountOf("pole"), FieldSlots.Length);
+        for (int i = 0; i < fields; i++)
+        {
+            var rect = FieldSlots[i];
+            if (SceneryArt.Field != null)
+            {
+                batch.Draw(SceneryArt.Field, rect, Color.White);
+                continue;
+            }
+            batch.DrawRect(rect, new Color(120, 80, 50));
+            for (int k = 0; k < 8; k++)
+                batch.DrawCircle(new Vector2(rect.X + 20 + k * 31, rect.Y + 25 + (k % 2) * 30), 12, new Color(255, 200, 30));
+        }
+
         // Stromy (zadní řada, vedle kytky)
         int[] treeSlots = { 120, 1240, 230, 1130, 340, 1020, 450, 910, 175, 1185, 395, 965 };
         int trees = Math.Min(CountOf("strom"), treeSlots.Length);
@@ -566,14 +589,14 @@ public class GameScene : Scene
             batch.DrawFrame(rect, hover ? 5 : 3, affordable ? new Color(90, 170, 70) : new Color(110, 100, 90));
 
             Color ink = affordable ? Ink : new Color(90, 80, 70);
-            batch.DrawString(Assets.FontMain, upgrade.Name, new Vector2(rect.X + 16, rect.Y + 8), ink);
-            batch.DrawString(Assets.FontSmall, upgrade.Description, new Vector2(rect.X + 16, rect.Y + 48), ink * 0.8f);
+            batch.DrawString(Assets.FontMain, upgrade.Name, new Vector2(rect.X + 16, rect.Y + 3), ink);
+            batch.DrawString(Assets.FontSmall, upgrade.Description, new Vector2(rect.X + 16, rect.Y + 40), ink * 0.8f);
 
             string effect = upgrade.PerClick > 0
                 ? $"+{NumberFormat.Rate(upgrade.PerClick)}/klik"
                 : $"+{NumberFormat.Rate(upgrade.PerSecond)}/s";
             batch.DrawString(Assets.FontSmall, $"Cena: {NumberFormat.Whole(_state.CostOf(upgrade))}   ({effect})",
-                new Vector2(rect.X + 16, rect.Y + 80), affordable ? new Color(40, 120, 40) : new Color(150, 60, 50));
+                new Vector2(rect.X + 16, rect.Y + 70), affordable ? new Color(40, 120, 40) : new Color(150, 60, 50));
 
             string owned = _state.Owned(upgrade).ToString();
             Vector2 ownedSize = Assets.FontBig.MeasureString(owned);

@@ -42,6 +42,7 @@
     { "id": "rukavice",  "name": "Zahradnické rukavice", "description": "Pořádný úchop = pořádný klik","baseCost": 2000,   "perClick": 10, "perSecond": 0 },
     { "id": "robot",     "name": "Robotí zahradník",     "description": "Sází kytky ve dne v noci",    "baseCost": 3000,   "perClick": 0,  "perSecond": 35,   "sound": "Sounds/robot_work" },
     { "id": "sklenik",   "name": "Skleník",              "description": "Celá továrna na kyslík",      "baseCost": 25000,  "perClick": 0,  "perSecond": 200,  "sound": "Sounds/greenhouse" },
+    { "id": "pole",      "name": "Pole slunečnic",       "description": "Řady slunečnic čistí ve velkém","baseCost": 80000,  "perClick": 0,  "perSecond": 500,  "sound": "Sounds/tractor_field" },
     { "id": "dron",      "name": "Dron s filtrem",       "description": "Vysává smog přímo z mraků",   "baseCost": 200000, "perClick": 0,  "perSecond": 1200, "sound": "Sounds/drone" }
   ]
 }

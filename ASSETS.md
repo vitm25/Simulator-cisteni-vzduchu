@@ -39,7 +39,7 @@ Ke každému nahraj ideálně 3 varianty (`_01`, `_02`, `_03`), hra je bude stř
 - [ ] `robot_work.wav` – robotí zahradník („píp-vrr“)
 - [ ] `drone.wav` – dron („vrrrrr“, vyšší tón)
 - [ ] `greenhouse.wav` – skleník (sklo „cink“ + větráček)
-- [ ] `tractor_field.wav` – pole („brrm brrm“) – *pole ve hře zatím není*
+- [ ] `tractor_field.wav` – Pole slunečnic („brrm brrm“)
 
 ### Záporák (SMOGOTRON 3000)
 - [ ] `villain_laugh_01..03.wav` – zlý smích (do hrnku/kýblu + pitch dolů + distortion), k hláškám v bublině

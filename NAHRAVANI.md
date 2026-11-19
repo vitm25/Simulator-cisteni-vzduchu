@@ -1,7 +1,7 @@
 # Plán nahrávání zvuků
 
 Všechno, co je potřeba udělat od zapnutí mikrofonu po zvuk ve hře. Odškrtávej `[x]`.
-Celkem **47 souborů** (43 zvuků + 4 hudby), rozdělených do 7 bloků. Každý blok je jedno sezení.
+Celkem **48 souborů** (44 zvuků + 4 hudby), rozdělených do 7 bloků. Každý blok je jedno sezení.
 
 > Zvuky se do MGCB Editoru **nepřidávají**. Stačí uložit `.wav` do správné složky a spustit hru (F5).
 
@@ -112,11 +112,12 @@ Vyzkoušení: počkat ve hře, vítr zafouká každých 6–14 s. Ptáci až nad
 - [ ] `wind_01.wav`, `wind_02.wav`, `wind_03.wav` – poryvy větru (2–4 s)
 - [ ] `birds.wav` – ptáci
 
-### Blok C – Vylepšení → `Content/Sounds` (4 soubory)
+### Blok C – Vylepšení → `Content/Sounds` (5 souborů)
 Vyzkoušení: koupit dané vylepšení (zvuk hraje při koupi navíc k `buy_upgrade`).
 - [ ] `bees.wav` – Včelí úl
 - [ ] `robot_work.wav` – Robotí zahradník
 - [ ] `greenhouse.wav` – Skleník
+- [ ] `tractor_field.wav` – Pole slunečnic („brrm brrm“ traktoru)
 - [ ] `drone.wav` – Dron s filtrem
 
 ### Blok D – Záporák: efekty → `Content/Sounds` (5 souborů)
@@ -191,8 +192,7 @@ Během dialogu se ztiší.
 
 ## Až budou potřeba (zatím ne)
 
-Tyhle zvuky jsou v checklistu, ale ve hře zatím nejsou místa, kde by zazněly:
-- `tractor_field.wav` – pole (vylepšení zatím neexistuje)
+Tenhle zvuk je v checklistu, ale ve hře zatím není místo, kde by zazněl:
 - `music_menu.wav` – hlavní menu (zatím neexistuje)
 
 ---

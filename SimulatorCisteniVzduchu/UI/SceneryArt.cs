@@ -15,6 +15,7 @@ public static class SceneryArt
     public static Texture2D Flower { get; private set; }
     public static Texture2D Tree { get; private set; }
     public static Texture2D Greenhouse { get; private set; }
+    public static Texture2D Field { get; private set; }
     public static Texture2D Robot { get; private set; }
     public static Texture2D Drone { get; private set; }
     public static Texture2D Bee { get; private set; }
@@ -27,6 +28,7 @@ public static class SceneryArt
         Flower = Assets.TryLoadTexture(content, "Sprites/flower");
         Tree = Assets.TryLoadTexture(content, "Sprites/tree");
         Greenhouse = Assets.TryLoadTexture(content, "Sprites/greenhouse");
+        Field = Assets.TryLoadTexture(content, "Sprites/field");
         Robot = Assets.TryLoadTexture(content, "Sprites/robot");
         Drone = Assets.TryLoadTexture(content, "Sprites/drone");
         Bee = Assets.TryLoadTexture(content, "Sprites/bee");

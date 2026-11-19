@@ -25,7 +25,7 @@ Obrázky se uloží do `Content/Sprites` a `Content/Ending`. Pak stačí spustit
 | Obrázek | Velikost |
 |---|---|
 | `villain_portrait`, `factory`, `flower`, `tree`, `greenhouse` | 230², 170×240, 300×530, 110×160, 240×110 |
-| `robot`, `drone`, `bee`, `smog_cloud` | 50², 80×25, 25², 190×115 |
+| `field`, `robot`, `drone`, `bee`, `smog_cloud` | 260×90, 50², 80×25, 25², 190×115 |
 | `bg_sky_smog`, `bg_sky_clean` | 1920×1080 (hra je mezi sebou prolíná podle kyslíku) |
 | `ending_01` … `ending_05` | 1920×1080 |
 

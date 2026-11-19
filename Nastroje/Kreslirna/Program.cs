@@ -13,6 +13,7 @@ Factory(Path.Combine(sprites, "factory.png"));
 FlowerSprite(Path.Combine(sprites, "flower.png"));
 Tree(Path.Combine(sprites, "tree.png"));
 Greenhouse(Path.Combine(sprites, "greenhouse.png"));
+Field(Path.Combine(sprites, "field.png"));
 Robot(Path.Combine(sprites, "robot.png"));
 Drone(Path.Combine(sprites, "drone.png"));
 Bee(Path.Combine(sprites, "bee.png"));
@@ -138,6 +139,34 @@ static void Greenhouse(string path)
     a.Stroke(Pal.White, 4, 14, 70, 34, 46);
     a.Stroke(Pal.White, 4, 132, 68, 150, 46);
     a.Stroke(Pal.White, 3, 86, 26, 100, 16);
+    a.Save(path);
+}
+
+static void Field(string path)
+{
+    using var a = new Art(260, 90, 12);
+    a.Amp = 1.2f;
+    // Zoraná hlína s brázdami
+    a.Shape(Pts(14, 40, 246, 40, 258, 88, 2, 88), Pal.Hex("8B5A3C"), 4);
+    for (int i = 0; i < 4; i++)
+    {
+        float y = 50 + i * 10;
+        a.Stroke(Pal.Hex("6B3E26"), 3, 12 - i * 3, y, 248 + i * 3, y);
+    }
+
+    // Slunečnice: zadní řada menší, přední větší
+    void Sunflower(float x, float baseY, float s)
+    {
+        a.Stroke(Pal.Black, 6 * s, x, baseY, x, baseY - 34 * s);
+        a.Stroke(Pal.Green, 3 * s, x, baseY, x, baseY - 34 * s);
+        a.Shape(Ell(x - 6 * s, baseY - 16 * s, 6 * s, 3 * s, -30), Pal.Green, 1.5f * s);
+        a.Shape(Ell(x, baseY - 40 * s, 11 * s, 11 * s), Pal.Yellow, 2 * s, Pal.Black);
+        a.Shape(Ell(x, baseY - 40 * s, 5 * s, 5 * s), Pal.Hex("6B3E26"), 1.5f * s);
+    }
+    for (int i = 0; i < 9; i++)
+        Sunflower(24 + i * 27, 56, 0.85f);
+    for (int i = 0; i < 8; i++)
+        Sunflower(36 + i * 27, 84, 1.0f);
     a.Save(path);
 }
 

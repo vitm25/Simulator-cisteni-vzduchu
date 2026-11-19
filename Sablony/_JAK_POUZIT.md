@@ -28,6 +28,7 @@ Otevři, nakresli a **Uložit jako** do správné složky (ať ti prázdné plá
 | `flower.png` | 300×530 | `Content/Sprites/` | stonek dole uprostřed |
 | `tree.png` | 110×160 | `Content/Sprites/` | |
 | `greenhouse.png` | 240×110 | `Content/Sprites/` | |
+| `field.png` | 260×90 | `Content/Sprites/` | pole slunečnic, leží na zemi |
 | `robot.png` | 50×50 | `Content/Sprites/` | |
 | `drone.png` | 80×25 | `Content/Sprites/` | |
 | `bee.png` | 25×25 | `Content/Sprites/` | |

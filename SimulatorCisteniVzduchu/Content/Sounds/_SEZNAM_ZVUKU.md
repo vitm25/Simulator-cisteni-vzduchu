@@ -29,6 +29,7 @@ V MGCB Editoru se nic přidávat nemusí. Chybějící zvuky hra prostě přesko
 | `bees.wav` | Včelí úl |
 | `robot_work.wav` | Robotí zahradník |
 | `greenhouse.wav` | Skleník |
+| `tractor_field.wav` | Pole slunečnic |
 | `drone.wav` | Dron s filtrem |
 
 ## Záporák SMOGOTRON 3000
