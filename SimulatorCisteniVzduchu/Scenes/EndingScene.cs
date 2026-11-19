@@ -9,7 +9,7 @@ namespace SimulatorCisteniVzduchu.Scenes;
 
 /// <summary>
 /// Koncová animace o 5 snímcích. Pokud existují obrázky
-/// Content/Ending/ending_01.png … ending_05.png (přidané v MGCB Editoru),
+/// Content/Ending/ending_01.png … ending_05.png (stačí je uložit do složky),
 /// použijí se. Jinak se nakreslí jednoduchý placeholder.
 /// </summary>
 public class EndingScene : Scene

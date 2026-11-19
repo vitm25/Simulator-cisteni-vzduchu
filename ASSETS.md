@@ -70,6 +70,12 @@ Smyčky nahrané k metronomu (např. 100 BPM, 8 taktů = 19,2 s), střih přesn�
 
 ## Grafika → `SimulatorCisteniVzduchu/Content/Sprites/`
 
+**Obrázky se do MGCB Editoru nepřidávají** – stačí uložit `.png` do složky a spustit hru (F5).
+Sytě růžová #FF00FF bude průhledná. Šablony a prázdná plátna ve správné velikosti jsou ve složce `Sablony/`.
+
+Všechny obrázky (postavy, objekty, pozadí `bg_sky_smog` / `bg_sky_clean`, `smog_cloud` i 5 snímků koncovky)
+teď kreslí program `Nastroje/Kreslirna` ve stylu Malování. Vlastní obrázek se stejným názvem je nahradí.
+
 ### Pozadí (1920×1080)
 - [ ] `bg_sky_smog.png` – šedé zasmogované nebe
 - [ ] `bg_sky_medium.png` – napůl čisté nebe

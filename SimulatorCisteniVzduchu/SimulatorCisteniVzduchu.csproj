@@ -31,5 +31,7 @@
     <None Update="Data\**\*.json" CopyToOutputDirectory="PreserveNewest" />
     <!-- Zvuky a hudba: stačí dát .wav do Content\Sounds nebo Content\Music, zkopírují se vedle .exe -->
     <None Update="Content\Sounds\**\*.wav;Content\Music\**\*.wav" CopyToOutputDirectory="PreserveNewest" />
+    <!-- Obrázky: stačí dát .png do Content\Sprites nebo Content\Ending -->
+    <None Update="Content\Sprites\**\*.png;Content\Ending\**\*.png" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>

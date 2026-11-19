@@ -57,6 +57,7 @@ public class GameScene : Scene
     public override void Load()
     {
         VillainArt.Load(Game.Content);
+        SceneryArt.Load(Game.Content);
 
         _state = new GameState(Balance.Load());
         _story = Story.Load();
@@ -258,8 +259,9 @@ public class GameScene : Scene
         batch.Begin(samplerState: SamplerState.LinearClamp);
 
         DrawSkyAndGround(batch, progress);
+        DrawFactories(batch);           // továrny vzadu, za stromy a ostatními vylepšeními
         DrawUpgradeDecorations(batch);
-        DrawFactories(batch);
+        DrawFactoryHealthBars(batch);   // ukazatele života ale vždycky navrchu, ať jsou vidět
         DrawFlower(batch);
         DrawHud(batch);
         DrawShop(batch);
@@ -273,18 +275,29 @@ public class GameScene : Scene
         batch.End();
     }
 
+    /// <summary>Kde se továrna právě kreslí (po zásahu se zatřese).</summary>
+    private Rectangle ShakenBounds(Factory factory)
+    {
+        var bounds = factory.Bounds;
+        bounds.Offset((int)(MathF.Sin(_time * 60) * 6 * factory.HitShake), 0);
+        return bounds;
+    }
+
     private void DrawFactories(SpriteBatch batch)
+    {
+        foreach (var factory in _villain.Factories)
+            VillainArt.DrawFactory(batch, ShakenBounds(factory), _time, factory.BuildProgress, factory.Slot);
+    }
+
+    private void DrawFactoryHealthBars(SpriteBatch batch)
     {
         var mouse = Input.MousePosition.ToPoint();
         foreach (var factory in _villain.Factories)
         {
-            var bounds = factory.Bounds;
-            // Po zásahu se továrna zatřese.
-            bounds.Offset((int)(MathF.Sin(_time * 60) * 6 * factory.HitShake), 0);
-            VillainArt.DrawFactory(batch, bounds, _time, factory.BuildProgress, factory.Slot);
-
             if (factory.BuildProgress < 1)
                 continue;
+
+            var bounds = ShakenBounds(factory);
 
             // Ukazatel života nad továrnou
             var bar = new Rectangle(bounds.Center.X - 70, bounds.Y - 30, 140, 16);
@@ -302,8 +315,22 @@ public class GameScene : Scene
 
     private void DrawSkyAndGround(SpriteBatch batch, float progress)
     {
-        // Slunce se s čistějším vzduchem víc ukazuje.
-        batch.DrawCircle(new Vector2(1180, 380), 90, new Color(255, 220, 90) * (0.25f + 0.75f * progress));
+        var screen = new Rectangle(0, 0, AirGame.ScreenWidth, AirGame.ScreenHeight);
+        bool paintedBackground = SceneryArt.SkySmog != null || SceneryArt.SkyClean != null;
+
+        if (paintedBackground)
+        {
+            // Zasmogovaná krajina se s čistějším vzduchem postupně prolíná do čisté.
+            if (SceneryArt.SkySmog != null)
+                batch.Draw(SceneryArt.SkySmog, screen, Color.White);
+            if (SceneryArt.SkyClean != null)
+                batch.Draw(SceneryArt.SkyClean, screen, Color.White * (SceneryArt.SkySmog != null ? progress : 1f));
+        }
+        else
+        {
+            // Slunce se s čistějším vzduchem víc ukazuje.
+            batch.DrawCircle(new Vector2(1180, 380), 90, new Color(255, 220, 90) * (0.25f + 0.75f * progress));
+        }
 
         // Továrny zahalí oblohu do hnědého oparu.
         batch.DrawRect(new Rectangle(0, 0, AirGame.ScreenWidth, GroundTop), new Color(70, 50, 30) * (0.09f * _factoryHaze));
@@ -314,13 +341,20 @@ public class GameScene : Scene
         foreach (var cloud in _smogClouds)
         {
             var c = new Vector2(cloud.X, cloud.Y);
+            if (SceneryArt.SmogCloud != null)
+            {
+                batch.Draw(SceneryArt.SmogCloud, new Rectangle((int)c.X - 95, (int)c.Y - 60, 190, 115),
+                    Color.White * (smogAlpha / 0.8f));
+                continue;
+            }
             batch.DrawCircle(c, 60, smogColor);
             batch.DrawCircle(c + new Vector2(55, 10), 45, smogColor);
             batch.DrawCircle(c + new Vector2(-50, 15), 40, smogColor);
         }
 
-        batch.DrawRect(new Rectangle(0, GroundTop, AirGame.ScreenWidth, AirGame.ScreenHeight - GroundTop),
-            Color.Lerp(DeadGround, AliveGround, progress));
+        if (!paintedBackground)
+            batch.DrawRect(new Rectangle(0, GroundTop, AirGame.ScreenWidth, AirGame.ScreenHeight - GroundTop),
+                Color.Lerp(DeadGround, AliveGround, progress));
     }
 
     private void DrawFlower(SpriteBatch batch)
@@ -329,6 +363,17 @@ public class GameScene : Scene
         float scale = 1 - 0.1f * _flowerPulse;
         bool hover = FlowerHitbox.Contains(Input.MousePosition.ToPoint());
         if (hover) scale += 0.03f;
+
+        if (SceneryArt.Flower != null)
+        {
+            // Obrázek kytky: pata stonku dole uprostřed, kytka se lehce kolébá ve větru.
+            var texture = SceneryArt.Flower;
+            var origin = new Vector2(texture.Width / 2f, texture.Height);
+            float sway = MathF.Sin(_time * 1.3f) * 0.025f;
+            batch.Draw(texture, FlowerBase + new Vector2(0, 10), null, Color.White, sway, origin,
+                new Vector2(scale, scale), SpriteEffects.None, 0);
+            return;
+        }
 
         Vector2 Pos(float x, float y) => FlowerBase + new Vector2(x, y) * scale;
 
@@ -365,6 +410,11 @@ public class GameScene : Scene
         {
             float baseY = GroundTop + 20 + (i >= 8 ? 45 : 0);
             var b = new Vector2(treeSlots[i], baseY);
+            if (SceneryArt.Tree != null)
+            {
+                batch.Draw(SceneryArt.Tree, new Rectangle((int)b.X - 55, (int)b.Y - 160, 110, 160), Color.White);
+                continue;
+            }
             batch.DrawRect(new Rectangle((int)b.X - 9, (int)b.Y - 70, 18, 70), new Color(110, 75, 45));
             batch.DrawCircle(b + new Vector2(0, -105), 55, new Color(45, 120, 45));
         }
@@ -375,6 +425,11 @@ public class GameScene : Scene
         for (int i = 0; i < greenhouses; i++)
         {
             var rect = new Rectangle(greenhouseX[i], 930, 240, 110);
+            if (SceneryArt.Greenhouse != null)
+            {
+                batch.Draw(SceneryArt.Greenhouse, rect, Color.White);
+                continue;
+            }
             batch.DrawRect(rect, new Color(200, 240, 255) * 0.7f);
             batch.DrawFrame(rect, 4, new Color(240, 250, 255));
         }
@@ -385,6 +440,14 @@ public class GameScene : Scene
         {
             float x = 680 + MathF.Sin(_time * 0.5f + i * 1.3f) * 560;
             var body = new Rectangle((int)x - 25, 990 - i * 6, 50, 50);
+            if (SceneryArt.Robot != null)
+            {
+                // Obrázek kouká doprava; když robot jede doleva, otočíme ho.
+                bool goingLeft = MathF.Cos(_time * 0.5f + i * 1.3f) < 0;
+                batch.Draw(SceneryArt.Robot, body, null, Color.White, 0, Vector2.Zero,
+                    goingLeft ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0);
+                continue;
+            }
             batch.DrawRect(body, new Color(150, 155, 165));
             batch.DrawCircle(new Vector2(x, body.Y + 18), 9, new Color(120, 230, 255));
         }
@@ -396,6 +459,14 @@ public class GameScene : Scene
             float angle = _time * (1.5f + i * 0.1f) + i * 0.9f;
             var center = FlowerBase + new Vector2(0, -360);
             var pos = center + new Vector2(MathF.Cos(angle) * (170 + i * 12), MathF.Sin(angle * 1.3f) * (110 + i * 8));
+            if (SceneryArt.Bee != null)
+            {
+                // Obrázek včely kouká doleva; když letí doprava, otočíme ji.
+                bool goingRight = MathF.Sin(angle) < 0;
+                batch.Draw(SceneryArt.Bee, new Rectangle((int)pos.X - 12, (int)pos.Y - 12, 25, 25), null, Color.White, 0,
+                    Vector2.Zero, goingRight ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0);
+                continue;
+            }
             batch.DrawCircle(pos, 11, new Color(255, 215, 40));
             batch.DrawRect(new Rectangle((int)pos.X - 2, (int)pos.Y - 10, 4, 20), Color.Black * 0.7f);
         }
@@ -406,6 +477,11 @@ public class GameScene : Scene
         {
             float x = 680 + MathF.Sin(_time * 0.3f + i * 1.7f) * 600;
             float y = 330 + i * 45 + MathF.Sin(_time * 2 + i) * 10;
+            if (SceneryArt.Drone != null)
+            {
+                batch.Draw(SceneryArt.Drone, new Rectangle((int)x - 40, (int)y - 10, 80, 25), Color.White);
+                continue;
+            }
             batch.DrawRect(new Rectangle((int)x - 30, (int)y, 60, 14), new Color(60, 60, 70));
             batch.DrawRect(new Rectangle((int)x - 40, (int)y - 8, 24, 4), new Color(200, 200, 210));
             batch.DrawRect(new Rectangle((int)x + 16, (int)y - 8, 24, 4), new Color(200, 200, 210));

@@ -1,4 +1,6 @@
 using System;
+using System.Diagnostics;
+using System.IO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -18,8 +20,11 @@ public static class Assets
     public static SpriteFont FontMain { get; private set; }
     public static SpriteFont FontBig { get; private set; }
 
+    private static GraphicsDevice _device;
+
     public static void Load(GraphicsDevice device, ContentManager content)
     {
+        _device = device;
         Pixel = new Texture2D(device, 1, 1);
         Pixel.SetData(new[] { Color.White });
         Circle = CreateCircle(device, 128);
@@ -30,19 +35,72 @@ public static class Assets
     }
 
     /// <summary>
-    /// Zkusí načíst obrázek z Content. Když ještě neexistuje (není nakreslený), vrátí null
+    /// Zkusí načíst obrázek, např. "Sprites/factory" = soubor Content/Sprites/factory.png.
+    /// PNG stačí uložit do složky, v MGCB Editoru se nic přidávat nemusí.
+    /// Sytě růžová (#FF00FF) se změní na průhlednou.
+    /// Když obrázek ještě neexistuje (není nakreslený), vrátí null
     /// a scéna místo něj nakreslí placeholder.
     /// </summary>
     public static Texture2D TryLoadTexture(ContentManager content, string name)
     {
-        try
+        string basePath = Path.Combine(AppContext.BaseDirectory, content.RootDirectory,
+            name.Replace('/', Path.DirectorySeparatorChar));
+
+        // 1) Obyčejný PNG soubor (doporučeno).
+        string png = basePath + ".png";
+        if (File.Exists(png) && _device != null)
         {
-            return content.Load<Texture2D>(name);
+            try
+            {
+                var texture = Texture2D.FromFile(_device, png);
+                PrepareForDrawing(texture);
+                return texture;
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine($"[Assets] Nejde načíst {png}: {e.Message}");
+            }
         }
-        catch (ContentLoadException)
+
+        // 2) Obrázek přidaný postaru přes MGCB Editor (.xnb).
+        if (File.Exists(basePath + ".xnb"))
         {
-            return null;
+            try
+            {
+                return content.Load<Texture2D>(name);
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine($"[Assets] Nejde načíst {name}.xnb: {e.Message}");
+            }
         }
+
+        return null;
+    }
+
+    /// <summary>
+    /// Růžovou (#FF00FF) udělá průhlednou a barvy předpřipraví tak, jak je SpriteBatch
+    /// očekává (premultiplied alpha) – jinak by průhledné okraje měly tmavé nebo barevné lemy.
+    /// </summary>
+    private static void PrepareForDrawing(Texture2D texture)
+    {
+        var data = new Color[texture.Width * texture.Height];
+        texture.GetData(data);
+
+        for (int i = 0; i < data.Length; i++)
+        {
+            var c = data[i];
+            if (c.R >= 230 && c.G <= 30 && c.B >= 230)
+            {
+                data[i] = Color.Transparent;
+            }
+            else if (c.A < 255)
+            {
+                data[i] = new Color(c.R * c.A / 255, c.G * c.A / 255, c.B * c.A / 255, c.A);
+            }
+        }
+
+        texture.SetData(data);
     }
 
     /// <summary>Bílé kolečko s vyhlazeným okrajem.</summary>

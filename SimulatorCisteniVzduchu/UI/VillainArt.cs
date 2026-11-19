@@ -100,7 +100,17 @@ public static class VillainArt
         {
             float phase = (time * 0.45f + k / 6f + seed * 0.13f) % 1f;
             var pos = chimney + new Vector2(phase * 60 + MathF.Sin(time + k) * 8, -phase * 220);
-            batch.DrawCircle(pos, 16 + phase * 34, new Color(60, 55, 50) * (0.75f * (1 - phase)));
+            float radius = 16 + phase * 34;
+            float alpha = 0.75f * (1 - phase);
+            if (SceneryArt.SmogCloud != null)
+            {
+                // Namalovaný obláček smogu (stejný jako mraky na obloze), jen menší.
+                var size = new Vector2(radius * 2.6f, radius * 1.6f);
+                batch.Draw(SceneryArt.SmogCloud, new Rectangle((int)(pos.X - size.X / 2), (int)(pos.Y - size.Y / 2),
+                    (int)size.X, (int)size.Y), Color.White * alpha);
+                continue;
+            }
+            batch.DrawCircle(pos, radius, new Color(60, 55, 50) * alpha);
         }
     }
 }
