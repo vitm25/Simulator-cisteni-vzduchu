@@ -19,6 +19,8 @@ public static class SceneryArt
     public static Texture2D Robot { get; private set; }
     public static Texture2D Drone { get; private set; }
     public static Texture2D Bee { get; private set; }
+    public static Texture2D SoundOn { get; private set; }
+    public static Texture2D SoundOff { get; private set; }
 
     public static void Load(ContentManager content)
     {
@@ -32,5 +34,7 @@ public static class SceneryArt
         Robot = Assets.TryLoadTexture(content, "Sprites/robot");
         Drone = Assets.TryLoadTexture(content, "Sprites/drone");
         Bee = Assets.TryLoadTexture(content, "Sprites/bee");
+        SoundOn = Assets.TryLoadTexture(content, "Sprites/icon_sound_on");
+        SoundOff = Assets.TryLoadTexture(content, "Sprites/icon_sound_off");
     }
 }

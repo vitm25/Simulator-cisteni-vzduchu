@@ -165,19 +165,34 @@ Vyzkoušení: mačkat F2 (a odklikávat dialogy), dokud kyslík nedojde na 100 %
 - (2. snímek použije `villain_laugh` z bloku D)
 
 ### Blok G – Hudba → `Content/Music` (4 soubory)
-Nejpracnější blok, nech si ho na konec. Stačí začít s `music_smog.wav` – dokud ostatní chybí, hraje ve hře místo nich.
+Ve hře už je **vygenerovaná hudba** (program `Nastroje/Hudebna`), takže hra není potichu.
+Zadání ale chce hudbu nahranou hlasem, proto ji nabroukej podle podkladů a vygenerovanou verzi přepiš.
+Začni s `music_smog` – je nejpomalejší a nejjednodušší.
 
-**Postup:**
-1. Menu **Vytvoření** → Rhythm Track: metronom, třeba **100 BPM**. Poslouchej ho **ve sluchátkách**.
-2. Každou vrstvu nahraj do **samostatné stopy** (Shift+R nahraje novou stopu souběžně s ostatními):
-   - [ ] beatbox („bum-ts-bum-ts“)
-   - [ ] basa (hluboké „dum dum“)
-   - [ ] melodie (broukání nebo pískání)
-3. Délka smyčky: **8 taktů při 100 BPM = přesně 19,2 s**. Střih přesně na dobu, aby smyčka navazovala.
-   Pomůže výběr *At Zero Crossings* (klávesa **Z**) – střih pak necvakne.
-4. Před exportem **smaž stopu s metronomem**.
-5. Vyzkoušej smyčku v Audacity tlačítkem pro opakované přehrávání (šipka dokola v horní liště). Nesmí cvaknout ani poskočit.
-6. Export: **jeden soubor** (ne podle štítků), Audacity stopy smíchá dohromady. Může být stereo, 16-bit PCM.
+**Podklady:** `Nastroje/Hudebna/podklady/<skladba>/` (když složka chybí, vygeneruj ji podle `Nastroje/Hudebna/README.md`).
+Každý podklad začíná **1 taktem metronomu** na rozjezd. V `noty.txt` jsou noty po taktech.
+
+| Skladba | Rozjezd (smazat) | Skladba končí na |
+|---|---|---|
+| `music_smog` | 0 – 2,4 s | 21,6 s |
+| `music_clean` | 0 – 2,0 s | 18,0 s |
+| `music_almost` | 0 – 1,6 s | 14,4 s |
+| `music_villain` | 0 – 2,67 s | dozní (asi 5,6 s) |
+
+**Postup v Audacity (jedna skladba):**
+1. Nový projekt. Přetáhni do okna `05_cela_skladba.wav` a pár krát si ji poslechni, ať víš, kam míříš.
+2. Přetáhni do okna `01_metronom.wav` a `04_rytmus.wav`. **Nasaď sluchátka** (jinak se podklad nahraje do mikrofonu).
+3. Nahraj **rytmus**: dej kurzor na začátek (0 s) a spusť nahrávání do **nové stopy** (Shift+R nebo
+   v menu Nahrávat → nahrát do nové stopy). Při prvním taktu jen poslouchej ťukání, pak beatboxuj podle podkladu.
+   Nepovede se? Ctrl+Z a znovu.
+4. Stejně nahraj **basu** (poslouchej `03_basa.wav`, „dum“ zavřenou pusou) a **melodii** (`02_melodie.wav`, broukej nebo pískej).
+   Starší podklad si můžeš ztlumit tlačítkem **M** u stopy.
+5. Ztlum (M) nebo smaž všechny stopy s podklady – zůstanou jen tvoje nahrávky.
+6. Uprav nahrávky jako ostatní zvuky: odšumění, u melodie klidně trocha Reverbu.
+7. Do pole **Výběr** dole napiš začátek a konec z tabulky (např. 2,4 s a 21,6 s) – tím vybereš přesně smyčku bez rozjezdu.
+8. Vyzkoušej smyčku tlačítkem pro opakované přehrávání (šipka dokola). Nesmí cvaknout ani poskočit.
+9. **Soubor → Export audio**, jen výběr, **WAV 16-bit PCM**, ulož do `SimulatorCisteniVzduchu/Content/Music`
+   pod stejným jménem (`music_smog.wav`) – přepíšeš tím vygenerovanou verzi.
 
 **Skladby:**
 - [ ] `music_smog.wav` – kyslík pod 50 %, smutná a zasmogovaná

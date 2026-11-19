@@ -71,8 +71,7 @@ public class AirGame : Game
 
         // M = vypnout / zapnout všechny zvuky.
         if (Input.KeyPressed(Keys.M))
-            Microsoft.Xna.Framework.Audio.SoundEffect.MasterVolume =
-                Microsoft.Xna.Framework.Audio.SoundEffect.MasterVolume > 0 ? 0 : 1;
+            Sounds.ToggleMute();
 
         Scenes.Update(gameTime);
         base.Update(gameTime);

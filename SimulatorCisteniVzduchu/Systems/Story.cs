@@ -6,7 +6,7 @@ namespace SimulatorCisteniVzduchu.Systems;
 public class StoryLine
 {
     public string Text { get; set; } = "";
-    /// <summary>Nepovinný zvuk z Content, např. "Sounds/villain_line_01".</summary>
+    /// <summary>Nepovinný zvuk z Content, např. "Sounds/dialog_24_1".</summary>
     public string Sound { get; set; }
 }
 

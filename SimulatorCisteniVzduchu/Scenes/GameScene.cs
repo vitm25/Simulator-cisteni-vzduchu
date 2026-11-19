@@ -30,6 +30,9 @@ public class GameScene : Scene
         new(990, 838, 260, 90),
     };
 
+    /// <summary>Ukazatel zvuku vpravo nahoře, nad ukazatelem kyslíku (dá se na něj kliknout).</summary>
+    private static readonly Rectangle SoundToggleRect = new(1040, 28, 260, 68);
+
     private const int ShopButtonHeight = 104;
     private const int ShopButtonGap = 6;
 
@@ -206,6 +209,13 @@ public class GameScene : Scene
     private void HandleClick(Vector2 mouse)
     {
         Point point = mouse.ToPoint();
+
+        if (SoundToggleRect.Contains(point))
+        {
+            Sounds.ToggleMute();
+            Sounds.Play("Sounds/ui_click", 0.6f);
+            return;
+        }
 
         // Továrny mají přednost – stojí v krajině vedle kytky.
         var factory = _villain.TryHit(point);
@@ -556,8 +566,31 @@ public class GameScene : Scene
         if (_state.TotalCleaned < 25)
             batch.DrawTextCentered(Assets.FontBig, "Klikej na kytku!", new Vector2(680, 760), Color.White);
 
-        batch.DrawText(Assets.FontSmall, "F11 – okno / celá obrazovka     M – zvuk zap./vyp.     Esc – uložit a ukončit",
+        batch.DrawText(Assets.FontSmall, "F11 – okno / celá obrazovka     Esc – uložit a ukončit",
             new Vector2(20, AirGame.ScreenHeight - 40), Color.White * 0.8f);
+
+        DrawSoundToggle(batch);
+    }
+
+    /// <summary>Ikonka reproduktoru vpravo nahoře – ukazuje, jestli je zvuk zapnutý, a dá se na ni kliknout.</summary>
+    private void DrawSoundToggle(SpriteBatch batch)
+    {
+        bool muted = Sounds.Muted;
+        bool hover = SoundToggleRect.Contains(Input.MousePosition.ToPoint());
+
+        batch.DrawRect(SoundToggleRect, Color.Black * (hover ? 0.45f : 0.25f));
+        batch.DrawFrame(SoundToggleRect, 3, muted ? new Color(230, 80, 70) : new Color(120, 200, 100));
+
+        var iconRect = new Rectangle(SoundToggleRect.X + 8, SoundToggleRect.Y + 10, 48, 48);
+        var icon = muted ? SceneryArt.SoundOff : SceneryArt.SoundOn;
+        if (icon != null)
+            batch.Draw(icon, iconRect, Color.White);
+
+        string label = muted ? "Zvuk vypnutý" : "Zvuk zapnutý";
+        batch.DrawText(Assets.FontSmall, label, new Vector2(iconRect.Right + 8, SoundToggleRect.Y + 5),
+            muted ? new Color(255, 150, 140) : Color.White);
+        batch.DrawText(Assets.FontSmall, "klikni nebo M", new Vector2(iconRect.Right + 8, SoundToggleRect.Y + 35),
+            Color.White * 0.65f);
     }
 
     private void DrawShop(SpriteBatch batch)

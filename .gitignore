@@ -435,3 +435,6 @@ FodyWeavers.xsd
 *.aup4
 *.aup4-shm
 *.aup4-wal
+
+# Podklady k nabroukání hudby (dají se kdykoli vygenerovat znovu programem Nastroje/Hudebna)
+Nastroje/Hudebna/podklady/

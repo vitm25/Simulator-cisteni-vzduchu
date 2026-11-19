@@ -18,6 +18,8 @@ Robot(Path.Combine(sprites, "robot.png"));
 Drone(Path.Combine(sprites, "drone.png"));
 Bee(Path.Combine(sprites, "bee.png"));
 SmogCloud(Path.Combine(sprites, "smog_cloud.png"));
+SoundIcon(Path.Combine(sprites, "icon_sound_on.png"), on: true);
+SoundIcon(Path.Combine(sprites, "icon_sound_off.png"), on: false);
 
 Console.WriteLine("Kreslím pozadí:");
 Background(Path.Combine(sprites, "bg_sky_smog.png"), clean: false);
@@ -212,6 +214,29 @@ static void Bee(string path)
     a.Stroke(Pal.Black, 2, 14, 10, 14, 20);
     a.Shape(Pts(21, 14, 24, 15, 21, 17), Pal.Black, 0);
     a.Shape(Rect(4, 13, 2, 2), Pal.Black, 0);
+    a.Save(path);
+}
+
+static void SoundIcon(string path, bool on)
+{
+    using var a = new Art(48, 48, on ? 13 : 14);
+    a.Amp = 0.4f;
+    // Reproduktor
+    a.Shape(Rect(4, 17, 10, 14), Pal.LightGray, 2);
+    a.Shape(Pts(14, 17, 27, 6, 27, 42, 14, 31), Pal.LightGray, 2);
+    a.Spray(22, 30, 5, Pal.Gray, 25);
+    if (on)
+    {
+        // Zvukové vlny
+        a.OutlinedStroke(Bezier(new(32, 17), new(36, 20), new(36, 28), new(32, 31), 10), Pal.Lime, 3, 1);
+        a.OutlinedStroke(Bezier(new(37, 11), new(44, 17), new(44, 31), new(37, 37), 12), Pal.Lime, 3, 1);
+    }
+    else
+    {
+        // Červený křížek
+        a.OutlinedStroke(Pts(32, 16, 45, 32), Pal.Red, 4, 1);
+        a.OutlinedStroke(Pts(45, 16, 32, 32), Pal.Red, 4, 1);
+    }
     a.Save(path);
 }
 

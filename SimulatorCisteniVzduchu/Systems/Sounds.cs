@@ -33,6 +33,11 @@ public static class Sounds
         _root = Path.Combine(AppContext.BaseDirectory, content.RootDirectory);
     }
 
+    /// <summary>Jsou všechny zvuky vypnuté (klávesa M nebo ikonka reproduktoru)?</summary>
+    public static bool Muted => SoundEffect.MasterVolume <= 0f;
+
+    public static void ToggleMute() => SoundEffect.MasterVolume = Muted ? 1f : 0f;
+
     /// <summary>Existuje aspoň jedna varianta tohoto zvuku?</summary>
     public static bool Exists(string name) => Variants(name).Count > 0;
 
