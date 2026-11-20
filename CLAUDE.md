@@ -74,6 +74,21 @@ Spouštění nástrojů (z pracovní složky; projekt hry je vedle ní):
 `README.md` v repozitáři má sekci „Co je nahrané a co vygenerované“ – při změně zvuků/hudby/grafiky ji aktualizuj.
 Projekty Audacity (`*.aup3`, `*.aup4`) jsou v `.gitignore` (GitHub limit 100 MB).
 
+## Vydání (.exe na GitHub Releases)
+
+Jeden samostatný exe (hra + .NET + všechny obrázky, zvuky, hudba a data uvnitř, nic se neinstaluje),
+sestavený jako Release (F2/F3 v něm nefungují). Uživatel si release na GitHubu dělá sám.
+Z kořene repozitáře:
+
+```
+dotnet publish SimulatorCisteniVzduchu/SimulatorCisteniVzduchu.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:IncludeAllContentForSelfExtract=true -p:EnableCompressionInSingleFile=true -p:DebugType=None -o <výstup>
+```
+
+Hotový exe (asi 53 MB) patří do pracovní složky `…\simulator cisteni vzduchu audia\Release\`, ne do repozitáře.
+Při spuštění se obsah rozbalí do `%TEMP%\.net\SimulatorCisteniVzduchu\` a `AppContext.BaseDirectory`
+ukazuje tam – proto všechny cesty k Content/Data musí jít přes `AppContext.BaseDirectory`.
+Ověření: spustit exe z prázdné složky (se zálohou save) a zkontrolovat rozbalené Content/Data a `openal.dll` + `SDL2.dll`.
+
 ## Testování
 
 - Headless testy logiky: konzolový projekt s `ProjectReference` na herní csproj, testuje `Systems/`
