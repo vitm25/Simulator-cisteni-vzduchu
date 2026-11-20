@@ -4,6 +4,15 @@ using Hudebna;
 // Hudebna: složí 4 skladby do hry a ke každé podklady k nabroukání.
 //   1. argument = kam uložit hotovou hudbu (Content/Music hry)
 //   2. argument = kam uložit podklady k nabroukání
+// Režim „zvuky“: dorobí chybějící zvukové efekty (existující nepřepisuje):
+//   dotnet run --project Nastroje/Hudebna -- zvuky SimulatorCisteniVzduchu/Content/Sounds
+if (args.Length > 1 && args[0] == "zvuky")
+{
+    Console.WriteLine("Dorábím chybějící zvuky:");
+    Effects.Generate(args[1]);
+    return;
+}
+
 string musicDir = args.Length > 0 ? args[0] : Path.Combine("SimulatorCisteniVzduchu", "Content", "Music");
 string guideDir = args.Length > 1 ? args[1] : Path.Combine("Nastroje", "Hudebna", "podklady");
 

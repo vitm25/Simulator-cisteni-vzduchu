@@ -15,6 +15,17 @@ dotnet run --project Nastroje/Hudebna -- SimulatorCisteniVzduchu/Content/Music N
 > **Pozor:** přepíše `music_*.wav` v `Content/Music`. Až tam budeš mít svou nahranou hudbu,
 > program už nespouštěj (nebo jako první argument dej jinou složku).
 
+## Chybějící zvukové efekty
+
+```
+dotnet run --project Nastroje/Hudebna -- zvuky SimulatorCisteniVzduchu/Content/Sounds
+```
+
+Dorobí **jen ty efekty, které ve složce chybí** – tvoje nahrávky nikdy nepřepíše.
+Kde to jde, skládá je z tvých nahrávek: smích ze `dialog_00_5`, rány u továren z `planet_explosion`,
+vítr ve vesmíru z `wind_01`. Včely, ptáky, robota, skleník, traktor a dron syntetizuje.
+Když některý efekt nahraješ sám, prostě ho ulož pod stejným jménem – nahradí ten vyrobený.
+
 ## Skladby
 
 | Soubor | Kdy hraje | Tempo | Délka |

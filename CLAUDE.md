@@ -58,6 +58,11 @@ Původní zadání: grafika z MS Malování, všechny zvuky nahrané hlasem, vš
 - `Nastroje/Hudebna` složí 4 skladby (`music_smog/clean/almost/villain`) z „hlasových“ zvuků
   (broukání, pískání, dum, beatbox) a podklady k nabroukání do `Nastroje/Hudebna/podklady/` (v .gitignore).
   `dotnet run --project Nastroje/Hudebna -- SimulatorCisteniVzduchu/Content/Music Nastroje/Hudebna/podklady`
+- Režim `zvuky` (`dotnet run --project Nastroje/Hudebna -- zvuky SimulatorCisteniVzduchu/Content/Sounds`)
+  dorobí **jen chybějící** efekty a existující nepřepíše. Z nahrávek uživatele skládá `villain_laugh`
+  (konec `dialog_00_5`), `villain_factory` a `factory_sabotage` (z `planet_explosion`),
+  `ending_silence_wind` (z `wind_01`). Syntetizované: `bees`, `birds`, `robot_work`, `greenhouse`,
+  `tractor_field`, `drone`. Pracovní kopie nahrávek uživatele jsou ve složkách `zvuky_*`.
 - Vygenerovaná hudba je dočasná – zadání chce hudbu nahranou hlasem. Uživatel ji nabrouká podle
   podkladů (NAHRAVANI.md, blok G) a přepíše. **Po tom už Hudebnu do Content/Music nespouštět.**
 
