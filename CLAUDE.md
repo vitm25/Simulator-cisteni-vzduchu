@@ -44,34 +44,35 @@ Původní zadání: grafika z MS Malování, všechny zvuky nahrané hlasem, vš
 - WAV musí být **16-bit PCM**.
 - Seznam všech zvuků a kdy hrají: `Content/Sounds/_SEZNAM_ZVUKU.md`, `Content/Music/_SEZNAM_HUDBY.md`.
 
-## Grafika ve stylu Malování
+## Pracovní složka mimo repozitář
 
-- Všechny obrázky generuje `Nastroje/Kreslirna` (System.Drawing, bez vyhlazování, roztřesené čáry,
-  paleta Malování, sprej, Comic Sans):
-  `dotnet run --project Nastroje/Kreslirna -- SimulatorCisteniVzduchu/Content`
-- **Pozor:** přepíše PNG se stejným názvem – vlastní kresby uživatele by se ztratily.
-- Každý obrázek má pevný seed → generování je deterministické.
-- `Sablony/` – podklady 1920×1080 s rozložením hry a koncovky + prázdná plátna ve správné velikosti.
+Nástroje a pracovní soubory jsou **mimo tento repozitář**, ve vedlejší složce
+`C:\Users\marec\Desktop\C#\simulator cisteni vzduchu audia` (není v gitu). Projekt hry má zůstat čistý –
+nové pracovní věci (nahrávky, podklady, nástroje, návody) patří tam, ne sem.
 
-## Hudba
+| V pracovní složce | Co to je |
+|---|---|
+| `Nastroje/Kreslirna` | program, který kreslí všechny obrázky ve stylu Malování (System.Drawing, bez vyhlazování, roztřesené čáry, paleta Malování, sprej, Comic Sans) |
+| `Nastroje/Hudebna` | program, který složil 4 skladby (`music_*`) a dorobil chybějící zvukové efekty |
+| `Nastroje/Hudebna/podklady/` | podklady k nabroukání hudby (metronom, melodie, basa, rytmus, noty) |
+| `Sablony/` | podklady 1920×1080 s rozložením hry a koncovky + prázdná plátna ve správné velikosti |
+| `NAHRAVANI.md` | plán nahrávání zvuků v Audacity 4 (bloky A–G, export WAV 16-bit, štítky) |
+| `ASSETS.md` | checklist všech obrázků a zvuků |
+| `zvuky_A…` až `zvuky_G…` | pracovní kopie nahrávek uživatele (i původní 27s `smog_collect`) |
 
-- `Nastroje/Hudebna` složí 4 skladby (`music_smog/clean/almost/villain`) z „hlasových“ zvuků
-  (broukání, pískání, dum, beatbox) a podklady k nabroukání do `Nastroje/Hudebna/podklady/` (v .gitignore).
-  `dotnet run --project Nastroje/Hudebna -- SimulatorCisteniVzduchu/Content/Music Nastroje/Hudebna/podklady`
-- Režim `zvuky` (`dotnet run --project Nastroje/Hudebna -- zvuky SimulatorCisteniVzduchu/Content/Sounds`)
-  dorobí **jen chybějící** efekty a existující nepřepíše. Z nahrávek uživatele skládá `villain_laugh`
-  (konec `dialog_00_5`), `villain_factory` a `factory_sabotage` (z `planet_explosion`),
-  `ending_silence_wind` (z `wind_01`). Syntetizované: `bees`, `birds`, `robot_work`, `greenhouse`,
-  `tractor_field`, `drone`. Pracovní kopie nahrávek uživatele jsou ve složkách `zvuky_*`.
-- Vygenerovaná hudba je dočasná – zadání chce hudbu nahranou hlasem. Uživatel ji nabrouká podle
-  podkladů (NAHRAVANI.md, blok G) a přepíše. **Po tom už Hudebnu do Content/Music nespouštět.**
+Spouštění nástrojů (z pracovní složky; projekt hry je vedle ní):
+- Obrázky: `dotnet run --project Nastroje/Kreslirna -- "../Simulator-cisteni-vzduchu/SimulatorCisteniVzduchu/Content"`
+  **Pozor:** přepíše PNG se stejným názvem – vlastní kresby uživatele by se ztratily. Seed je pevný → deterministické.
+- Hudba: `dotnet run --project Nastroje/Hudebna -- "../Simulator-cisteni-vzduchu/SimulatorCisteniVzduchu/Content/Music" Nastroje/Hudebna/podklady`
+  **Pozor:** přepíše `music_*.wav`. Vygenerovaná hudba je dočasná (zadání chce hudbu nahranou hlasem) –
+  až ji uživatel nabrouká a přepíše, Hudebnu do Content/Music už nespouštět.
+- Chybějící efekty: `dotnet run --project Nastroje/Hudebna -- zvuky "../Simulator-cisteni-vzduchu/SimulatorCisteniVzduchu/Content/Sounds"`
+  dorobí **jen chybějící** soubory, existující nepřepíše. Z nahrávek uživatele skládá `villain_laugh`
+  (konec `dialog_00_5`), `villain_factory` a `factory_sabotage` (z `planet_explosion`), `ending_silence_wind`
+  (z `wind_01`). Syntetizované: `bees`, `birds`, `robot_work`, `greenhouse`, `tractor_field`, `drone`.
 
-## Dokumenty pro uživatele
-
-- `ASSETS.md` – checklist všech obrázků a zvuků.
-- `NAHRAVANI.md` – plán nahrávání zvuků v Audacity 4 (bloky A–G, export WAV 16-bit, štítky).
-- Složky `zvuky_A…` až `zvuky_G…` v kořeni jsou pracovní kopie nahrávek uživatele.
-- Projekty Audacity (`*.aup3`, `*.aup4`) jsou v `.gitignore` (GitHub limit 100 MB).
+`README.md` v repozitáři má sekci „Co je nahrané a co vygenerované“ – při změně zvuků/hudby/grafiky ji aktualizuj.
+Projekty Audacity (`*.aup3`, `*.aup4`) jsou v `.gitignore` (GitHub limit 100 MB).
 
 ## Testování
 
